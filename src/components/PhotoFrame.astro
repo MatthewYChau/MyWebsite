@@ -25,6 +25,7 @@ const label = `${photo.caption}, ${photo.location}`;
   href={href}
   style={`--tilt: ${tilt}deg`}
   data-lightbox-index={lightboxIndex}
+  data-astro-reload={lightboxIndex !== undefined ? '' : undefined}
   data-placeholder-item={photo.placeholder ? '' : undefined}
   data-real-item={photo.placeholder ? undefined : ''}
 >

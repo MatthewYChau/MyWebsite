@@ -1,0 +1,43 @@
+---
+/** Open Kitchen: every video, newest first. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import VideoCard from '../components/VideoCard.astro';
+import { getVideos } from '../lib/content';
+
+const videos = await getVideos();
+---
+
+<BaseLayout title="Open Kitchen" description="Videos by Matthew Chau: builds, tests and behind the scenes.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Open Kitchen</h1>
+      <p>All my videos, newest first. Nothing loads from YouTube until you press play.</p>
+    </header>
+
+    {
+      videos.length > 0 ? (
+        <div class="kitchen">
+          {videos.map((video) => (
+            <div class="kitchen__item laminated">
+              <VideoCard video={video} heading="h2" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-note">No videos yet.</p>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .kitchen {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+
+  .kitchen__item {
+    padding: var(--space-4);
+  }
+</style>

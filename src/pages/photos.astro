@@ -1,0 +1,95 @@
+---
+/** Photo wall: framed and taped photos on tiles. Click one to open the lightbox. */
+import { getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import Lightbox from '../islands/Lightbox';
+import { formatDate, getPhotos } from '../lib/content';
+
+const photos = await getPhotos();
+
+// A large version of each photo for the lightbox (and for the plain link when JavaScript is off).
+const large = await Promise.all(
+  photos.map(async (photo) => {
+    const image = await getImage({ src: photo.image, width: Math.min(photo.image.width, 1800) });
+    return {
+      src: image.src,
+      width: Number(image.attributes.width),
+      height: Number(image.attributes.height),
+      caption: photo.caption,
+      location: photo.location,
+      date: formatDate(photo.date),
+    };
+  }),
+);
+---
+
+<BaseLayout title="Photo Wall" description="Photography by Matthew Chau.">
+  <div class="wall tiles">
+    <div class="wrap">
+      <header class="page-head wall__head">
+        <h1>
+          <span class="page-head__zh" lang="zh-Hant">相片牆</span>
+          Photo Wall
+        </h1>
+        <p>My photography. Pick a photo to see it larger. Use the arrow keys to move between photos.</p>
+      </header>
+
+      <ul class="masonry">
+        {
+          photos.map((photo, index) => (
+            <li>
+              <PhotoFrame
+                photo={photo}
+                index={index}
+                href={large[index].src}
+                lightboxIndex={index}
+                sizes="(min-width: 68.75rem) 360px, (min-width: 40rem) 45vw, 90vw"
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <Lightbox client:load photos={large} />
+</BaseLayout>
+
+<style>
+  .wall {
+    padding-bottom: var(--space-8);
+    border-bottom: var(--border);
+  }
+
+  .wall__head {
+    margin-block: var(--space-6) var(--space-6);
+    padding: var(--space-5);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-paper);
+  }
+
+  .masonry {
+    columns: 1;
+    column-gap: var(--space-6);
+    padding-inline: var(--space-2);
+  }
+
+  .masonry li {
+    break-inside: avoid;
+    padding-block: var(--space-4);
+  }
+
+  @media (min-width: 40rem) {
+    .masonry {
+      columns: 2;
+    }
+  }
+
+  @media (min-width: 68.75rem) {
+    .masonry {
+      columns: 3;
+    }
+  }
+</style>

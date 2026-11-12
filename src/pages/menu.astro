@@ -1,0 +1,158 @@
+---
+/** Plain, fast list of every project. For readers who do not want to order. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { bookHref, getBooks, getProjectsBySection, projectHref, SECTION_META, SECTION_ORDER } from '../lib/content';
+
+const bySection = await getProjectsBySection();
+const books = await getBooks();
+---
+
+<BaseLayout
+  title="Full menu"
+  description="Every project by Matthew Chau in one plain list: work projects, personal projects and passion projects."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>
+        <span class="page-head__zh" lang="zh-Hant">餐牌</span>
+        Full menu
+      </h1>
+      <p>Every project in one list. Pick a name to read the write-up.</p>
+    </header>
+
+    <div class="sheet laminated">
+      {
+        SECTION_ORDER.map((key) => (
+          <section class="list-section" aria-labelledby={`list-${key}`}>
+            <h2 id={`list-${key}`}>
+              <span lang="zh-Hant">{SECTION_META[key].zh}</span> {SECTION_META[key].en}
+              <span class="list-section__note">{SECTION_META[key].note}</span>
+            </h2>
+            <ul>
+              {bySection[key].map((project) => (
+                <li class="row">
+                  <span class="row__code">{project.data.code}</span>
+                  <div>
+                    <p class="row__name">
+                      <a href={projectHref(project)}>{project.data.name}</a>
+                      {project.data.status === 'in-progress' && <span class="status-badge">In progress</span>}
+                      {project.data.placeholder && <span class="placeholder-badge">PLACEHOLDER</span>}
+                    </p>
+                    <p class="made-at">Made at: {project.data.madeAt}</p>
+                    <p class="row__desc">{project.data.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+
+      <section class="list-section" aria-labelledby="list-drinks">
+        <h2 id="list-drinks">
+          <span lang="zh-Hant">飲品</span> Drinks
+          <span class="list-section__note">Book reviews</span>
+        </h2>
+        <ul>
+          {
+            books.map((book) => (
+              <li class="row">
+                <span class="row__code">{book.data.code}</span>
+                <div>
+                  <p class="row__name">
+                    <a href={bookHref(book)}>{book.data.title}</a>
+                    {book.data.placeholder && <span class="placeholder-badge">PLACEHOLDER</span>}
+                  </p>
+                  <p class="row__desc">
+                    by {book.data.author}. Paired with <span lang="zh-Hant">{book.data.pairedDrink.zh}</span> ({book.data.pairedDrink.en}).
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+
+    <p class="after">
+      <a class="btn" href="/">Order from the menu</a>
+      <a class="btn btn--quiet" href="/about/">About the chef</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .sheet {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .list-section + .list-section {
+    margin-top: var(--space-6);
+  }
+
+  .list-section h2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 4px double var(--color-ink);
+    font-size: var(--text-xl);
+    text-transform: uppercase;
+  }
+
+  .list-section h2 [lang='zh-Hant'] {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    color: var(--color-red);
+  }
+
+  .list-section__note {
+    margin-left: auto;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--color-ink-soft);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+    border-bottom: 1px dashed var(--color-ink-soft);
+  }
+
+  .row__code {
+    font-family: var(--font-display);
+    color: var(--color-red);
+  }
+
+  .row__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    font-size: var(--text-md);
+    font-weight: 700;
+  }
+
+  .row__desc {
+    max-width: var(--prose-max);
+    color: var(--color-ink-soft);
+  }
+
+  .after {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  @media (min-width: 48rem) {
+    .sheet {
+      padding: var(--space-6) var(--space-7);
+    }
+  }
+</style>

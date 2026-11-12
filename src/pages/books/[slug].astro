@@ -1,0 +1,238 @@
+---
+/** A book review, styled like the ticket a waiter writes for a drink order. */
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Rating from '../../components/Rating.astro';
+import { formatMonth, getBooks, type Book } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const books = await getBooks();
+  return books.map((book) => ({ params: { slug: book.id }, props: { book } }));
+}
+
+interface Props {
+  book: Book;
+}
+
+const { book } = Astro.props;
+const { data } = book;
+const { Content } = await render(book);
+---
+
+<BaseLayout
+  title={`${data.title} by ${data.author}`}
+  description={`Book review: ${data.title} by ${data.author}. Paired with ${data.pairedDrink.en}.`}
+  ogType="article"
+>
+  <article class="wrap ticket-page">
+    <div class="ticket">
+      <header class="ticket__head">
+        <p class="ticket__label">
+          <span lang="zh-Hant">飲品</span> Drink order
+        </p>
+        <p class="ticket__code">{data.code}</p>
+      </header>
+
+      <p class="ticket__drink">
+        <span class="ticket__drink-zh" lang="zh-Hant">{data.pairedDrink.zh}</span>
+        <span class="ticket__drink-en">{data.pairedDrink.en}</span>
+      </p>
+
+      <div class="ticket__book">
+        {
+          data.cover && (
+            <Image class="ticket__cover" src={data.cover} alt={`Cover of ${data.title}`} width={240} widths={[240, 480]} sizes="120px" />
+          )
+        }
+        <div>
+          <p class="ticket__small">Paired with the book</p>
+          <h1 class="ticket__title">{data.title}</h1>
+          <p class="ticket__author">by {data.author}</p>
+          {data.placeholder && <p class="placeholder-badge">PLACEHOLDER</p>}
+        </div>
+      </div>
+
+      <dl class="ticket__rows">
+        <div>
+          <dt>Read</dt>
+          <dd>
+            <time datetime={data.dateRead.toISOString().slice(0, 10)}>{formatMonth(data.dateRead)}</time>
+          </dd>
+        </div>
+        <div>
+          <dt>Rating</dt>
+          <dd>
+            <Rating value={data.rating} />
+          </dd>
+        </div>
+      </dl>
+
+      <div class="ticket__review prose">
+        <Content />
+      </div>
+    </div>
+
+    <p class="ticket-page__back">
+      <a class="btn" href="/#drinks-title">Back to drinks</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .ticket-page {
+    padding-top: var(--space-7);
+  }
+
+  .ticket {
+    position: relative;
+    max-width: 40rem;
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-6);
+    background: var(--strip-white);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sheet);
+    transform: rotate(-0.4deg);
+  }
+
+  /* hole where the ticket was spiked */
+  .ticket::before {
+    content: '';
+    position: absolute;
+    top: var(--space-4);
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    border: var(--border);
+    border-radius: 50%;
+    background: var(--color-cream);
+    transform: translateX(-50%);
+  }
+
+  .ticket__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-red);
+    color: var(--color-red);
+  }
+
+  .ticket__label {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+  }
+
+  .ticket__label [lang='zh-Hant'] {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    font-size: var(--text-lg);
+  }
+
+  .ticket__code {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: var(--text-lg);
+  }
+
+  .ticket__drink {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-4);
+    margin-top: var(--space-5);
+  }
+
+  .ticket__drink-zh {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    font-size: var(--text-3xl);
+    line-height: 1;
+    color: var(--color-red);
+  }
+
+  .ticket__drink-en {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: var(--text-xl);
+    color: var(--color-pencil);
+  }
+
+  .ticket__book {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px dashed var(--color-ink);
+  }
+
+  .ticket__book :global(.ticket__cover) {
+    flex: none;
+    width: 7.5rem;
+    height: auto;
+    border: var(--border);
+  }
+
+  .ticket__small {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
+  .ticket__title {
+    margin-top: var(--space-1);
+    font-size: var(--text-xl);
+  }
+
+  .ticket__author {
+    margin-block: var(--space-1) var(--space-2);
+    font-size: var(--text-md);
+    color: var(--color-ink-soft);
+  }
+
+  .ticket__rows {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin: var(--space-4) 0 0;
+    padding-block: var(--space-3);
+    border-block: 1px dashed var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .ticket__rows div {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .ticket__rows dt {
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .ticket__rows dd {
+    margin: 0;
+  }
+
+  .ticket__review {
+    margin-top: var(--space-5);
+  }
+
+  .ticket-page__back {
+    max-width: 40rem;
+    margin: var(--space-6) auto 0;
+  }
+
+  @media (min-width: 48rem) {
+    .ticket {
+      padding-inline: var(--space-7);
+    }
+  }
+</style>

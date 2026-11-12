@@ -1,0 +1,115 @@
+/* Photo lightbox. */
+
+.lightbox {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: var(--space-4);
+  border: 0;
+  background: transparent;
+  color: var(--color-paper);
+  overflow: hidden;
+}
+
+.lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.lightbox::backdrop {
+  background: rgb(15 12 10 / 0.92);
+}
+
+.lightbox__inner {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  justify-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.lightbox__figure {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  justify-items: center;
+  min-height: 0;
+  margin: 0;
+}
+
+.lightbox__image {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  border: 6px solid var(--strip-white);
+  background: var(--color-ink);
+}
+
+.lightbox__caption {
+  display: grid;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.lightbox__text {
+  font-weight: 700;
+  font-size: var(--text-md);
+}
+
+.lightbox__meta,
+.lightbox__count {
+  font-size: var(--text-sm);
+  opacity: 0.85;
+}
+
+.lightbox__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lightbox__button {
+  display: inline-grid;
+  place-items: center;
+  min-width: 3rem;
+  min-height: 3rem;
+  padding: 0 var(--space-4);
+  border: 2px solid var(--color-paper);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-paper);
+  font-weight: 700;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.lightbox__button:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.lightbox__button:active {
+  transform: translateY(1px);
+}
+
+.lightbox__button:focus-visible {
+  outline-color: var(--color-yellow);
+}
+
+.lightbox__button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

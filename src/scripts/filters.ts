@@ -105,3 +105,5 @@ document.addEventListener('click', (event) => {
 
 document.addEventListener('astro:page-load', apply);
 apply();
+
+export {};

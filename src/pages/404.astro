@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found" description="This page is not on the menu.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>
+        <span class="page-head__zh" lang="zh-Hant">售罄</span>
+        Sold out
+      </h1>
+      <p>This page is not on the menu. It may have moved, or the link may be wrong.</p>
+    </header>
+    <p class="actions">
+      <a class="btn" href="/">Back to the menu</a>
+      <a class="btn btn--quiet" href="/menu/">See the full list</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>

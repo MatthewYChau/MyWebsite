@@ -71,3 +71,5 @@ function setup() {
 }
 
 document.addEventListener('astro:page-load', setup);
+
+export {};
