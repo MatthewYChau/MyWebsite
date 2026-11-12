@@ -1,0 +1,577 @@
+/*
+ * Order slip (點餐紙), receipt and delivery drone.
+ * Default layout is a drawer at the bottom of the screen.
+ * On wide screens the menu page docks the slip in its sidebar instead.
+ */
+
+/* ---------- Pencil tick box (also used on project cards) ---------- */
+
+.tickbox {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 3px;
+  background: var(--color-paper);
+}
+
+.tickbox__tick {
+  position: absolute;
+  inset: -0.35rem -0.4rem 0 0;
+  width: calc(100% + 0.4rem);
+  height: calc(100% + 0.35rem);
+  overflow: visible;
+}
+
+.tickbox__tick path {
+  fill: none;
+  stroke: var(--color-pencil);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 320ms var(--ease-out);
+}
+
+input:checked + .tickbox .tickbox__tick path {
+  stroke-dashoffset: 0;
+}
+
+input:focus-visible + .tickbox {
+  outline: 3px solid var(--color-mint-deep);
+  outline-offset: 2px;
+}
+
+/* ---------- Drawer (default) ---------- */
+
+.slip {
+  --tab-height: 3.25rem;
+  font-size: var(--text-sm);
+}
+
+.slip__tab {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: var(--z-slip);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  height: var(--tab-height);
+  padding-inline: var(--gutter);
+  border: 0;
+  border-top: var(--border);
+  background: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: left;
+  box-shadow: 0 -8px 20px -12px rgb(27 23 20 / 0.5);
+}
+
+.slip__tab [lang='zh-Hant'] {
+  margin-right: var(--space-1);
+  font-family: var(--font-zh-display);
+  font-weight: 900;
+  font-size: var(--text-md);
+  color: var(--color-red);
+}
+
+.slip__count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  margin-left: auto;
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-red);
+  color: var(--color-paper);
+}
+
+.slip__chevron {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.slip.is-open .slip__chevron {
+  transform: rotate(180deg);
+}
+
+.slip__paper {
+  position: fixed;
+  right: 0;
+  bottom: var(--tab-height);
+  left: 0;
+  z-index: calc(var(--z-slip) - 1);
+  max-height: calc(100dvh - var(--tab-height) - var(--nav-height) - var(--space-4));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-4) var(--gutter) var(--space-5);
+  border-top: var(--border);
+  background-color: var(--strip-white);
+  /* ruled lines, like a pad of order slips */
+  background-image: linear-gradient(transparent calc(100% - 1px), rgb(29 106 80 / 0.14) 0);
+  background-size: 100% 2rem;
+  box-shadow: 0 -18px 40px -18px rgb(27 23 20 / 0.6);
+  visibility: hidden;
+  transform: translateY(104%);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    visibility 0s linear var(--dur-base);
+}
+
+.slip.is-open .slip__paper {
+  visibility: visible;
+  transform: none;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    visibility 0s;
+}
+
+.slip__head {
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--color-red);
+  color: var(--color-red);
+}
+
+.slip__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  text-transform: uppercase;
+}
+
+.slip__title [lang='zh-Hant'] {
+  font-family: var(--font-zh-display);
+  font-weight: 900;
+  font-size: var(--text-lg);
+}
+
+.slip__hint {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-ink-soft);
+}
+
+.slip__group {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.slip__group legend {
+  padding: 0;
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-red);
+}
+
+.slip__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-block: var(--space-1);
+  cursor: pointer;
+}
+
+.slip__code {
+  flex: none;
+  min-width: 2rem;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-red);
+}
+
+.slip__name {
+  line-height: var(--leading-snug);
+}
+
+.slip__row:hover .slip__name {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.slip__foot {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 2px dashed var(--color-ink-soft);
+}
+
+.slip__total {
+  font-weight: 700;
+}
+
+.slip__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.slip__clear {
+  min-height: var(--tap);
+  padding-inline: var(--space-2);
+  border: 0;
+  background: none;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.slip__clear:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.slip__checkout [lang='zh-Hant'] {
+  font-family: var(--font-zh-display);
+  font-weight: 900;
+}
+
+/* Room at the end of the page so the drawer tab never covers the footer. */
+body:has(.slip-mount) {
+  --slip-clearance: 3.25rem;
+}
+
+/* On wider screens the floating drawer becomes a compact tab in the corner. */
+@media (min-width: 48rem) {
+  .slip-mount--float .slip__tab {
+    right: var(--gutter);
+    left: auto;
+    width: var(--slip-width);
+    padding-inline: var(--space-4);
+    border: var(--border);
+    border-bottom: 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  .slip-mount--float .slip__paper {
+    right: var(--gutter);
+    left: auto;
+    width: var(--slip-width);
+    padding-inline: var(--space-4);
+    border: var(--border);
+    border-bottom: 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  body:has(.slip-mount--float) {
+    --slip-clearance: 0px;
+  }
+}
+
+/* ---------- Docked in the menu sidebar (wide screens) ---------- */
+
+@media (min-width: 68.75rem) {
+  .slip-mount--dock .slip__tab {
+    display: none;
+  }
+
+  .slip-mount--dock .slip__paper {
+    position: static;
+    max-height: calc(100dvh - var(--nav-height) - var(--space-6));
+    padding: var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lift);
+    visibility: visible;
+    transform: rotate(-0.6deg);
+    transition: none;
+  }
+
+  /* torn-off edge at the top of the pad */
+  .slip-mount--dock .slip__paper::before {
+    content: '';
+    display: block;
+    height: 0.75rem;
+    margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) var(--space-3);
+    background: var(--color-red);
+    border-radius: 2px 2px 0 0;
+  }
+
+  body:has(.slip-mount--dock) {
+    --slip-clearance: 0px;
+  }
+}
+
+/* ---------- Receipt ---------- */
+
+.receipt {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: var(--space-6) var(--space-4);
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  overflow-y: auto;
+}
+
+.receipt[open] {
+  display: grid;
+  place-items: start center;
+}
+
+.receipt::backdrop {
+  background: rgb(27 23 20 / 0.72);
+}
+
+.receipt__paper {
+  width: min(100%, 22rem);
+  margin-block: auto;
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  background: var(--strip-white);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  /* torn zig-zag edge at the bottom */
+  --tooth: 14px;
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--tooth) 100%;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--tooth) 100%;
+  animation: receipt-print 700ms steps(12, end) both;
+}
+
+@keyframes receipt-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-1.5rem);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+.receipt__shop {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.receipt__shop [lang='zh-Hant'] {
+  font-family: var(--font-zh-display);
+  font-weight: 900;
+  color: var(--color-red);
+}
+
+.receipt__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  margin-top: var(--space-3);
+  padding-block: var(--space-2);
+  border-block: 1px dashed var(--color-ink);
+}
+
+.receipt__items {
+  margin-top: var(--space-3);
+}
+
+.receipt__items a {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr auto;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding-block: var(--space-2);
+  text-decoration: none;
+}
+
+.receipt__name {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.receipt__items a:hover .receipt__name {
+  text-decoration-thickness: 3px;
+}
+
+.receipt__code {
+  font-weight: 700;
+}
+
+.receipt__total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--color-ink);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.receipt__note {
+  margin-top: var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-ink-soft);
+  text-align: center;
+}
+
+.receipt__thanks {
+  margin-top: var(--space-2);
+  text-align: center;
+  font-weight: 700;
+}
+
+.receipt__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  font-family: var(--font-body);
+}
+
+/* ---------- Delivery drone (under 2 seconds) ---------- */
+
+.drone-run {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.drone,
+.drone__bag {
+  position: absolute;
+  top: 9vh;
+  left: 0;
+}
+
+.drone {
+  width: 120px;
+  animation: drone-fly 1800ms var(--ease-in-out) both;
+}
+
+.drone__body {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.drone__frame {
+  fill: none;
+  stroke: var(--color-paper);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.drone__hull {
+  fill: var(--color-red);
+  stroke: var(--color-paper);
+  stroke-width: 3;
+}
+
+.drone__eye {
+  fill: var(--color-yellow);
+}
+
+.drone__rotor ellipse {
+  fill: var(--color-paper);
+  opacity: 0.85;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rotor-spin 90ms linear infinite alternate;
+}
+
+.drone__bag {
+  width: 34px;
+  height: 38px;
+  margin: 50px 0 0 43px;
+  border: 3px solid var(--color-ink);
+  border-radius: 3px 3px 6px 6px;
+  background: var(--strip-orange);
+  animation: bag-drop 1800ms var(--ease-in-out) both;
+}
+
+.drone__bag::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 6px;
+  width: 16px;
+  height: 12px;
+  border: 3px solid var(--color-ink);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+
+@keyframes drone-fly {
+  0% {
+    transform: translate(-140px, 0) rotate(8deg);
+  }
+  42%,
+  56% {
+    transform: translate(calc(50vw - 60px), 18px) rotate(0deg);
+  }
+  100% {
+    transform: translate(calc(100vw + 20px), -30px) rotate(10deg);
+  }
+}
+
+@keyframes bag-drop {
+  0% {
+    transform: translate(-140px, 0);
+    opacity: 1;
+  }
+  42%,
+  52% {
+    transform: translate(calc(50vw - 60px), 18px);
+    opacity: 1;
+  }
+  88% {
+    transform: translate(calc(50vw - 60px), 34vh);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(50vw - 60px), 36vh);
+    opacity: 0;
+  }
+}
+
+@keyframes rotor-spin {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drone-run {
+    display: none;
+  }
+
+  .receipt__paper {
+    animation: none;
+  }
+}

@@ -1,0 +1,158 @@
+---
+/** Filters above the menu. Needs JavaScript, so it hides without it. */
+import { MADE_AT } from '../content.config';
+---
+
+<div class="filters js-only" data-filters>
+  <div class="filters__group" role="group" aria-label="Filter by where it was made">
+    <span class="filters__label">Made at</span>
+    {
+      MADE_AT.map((place) => (
+        <button type="button" class="chip" aria-pressed="false" data-filter-made={place}>
+          {place}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="filters__group filters__group--requests" role="group" aria-label="Kitchen requests">
+    <span class="filters__label">Requests</span>
+    <button type="button" class="chip chip--zh" aria-pressed="false" data-filter-flag="no-progress" aria-describedby="tip-no-ice">
+      <span lang="zh-Hant">走冰</span>
+      <span class="chip__tip" role="tooltip" id="tip-no-ice">"No ice": hide items that are still in progress.</span>
+    </button>
+    <button type="button" class="chip chip--zh" aria-pressed="false" data-filter-flag="no-placeholder" aria-describedby="tip-less-sweet">
+      <span lang="zh-Hant">少甜</span>
+      <span class="chip__tip" role="tooltip" id="tip-less-sweet">"Less sweet": hide placeholder items.</span>
+    </button>
+  </div>
+
+  <p class="filters__status">
+    <span aria-live="polite" data-filter-status></span>
+    <button type="button" class="filters__clear" data-filter-clear hidden>Clear filters</button>
+  </p>
+
+  <p class="filters__legend">Prep time is how long it took. Spice is how demanding it was.</p>
+</div>
+
+<script>
+  import '../scripts/filters';
+</script>
+
+<style>
+  .filters {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    border: 2px dashed var(--color-ink-soft);
+    border-radius: var(--radius-md);
+    background: var(--color-mint-soft);
+  }
+
+  .filters__group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .filters__label {
+    flex: 0 0 5rem;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding: var(--space-1) var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--color-paper);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+  }
+
+  .chip:hover {
+    transform: translateY(-1px);
+    background: var(--color-yellow-soft);
+  }
+
+  .chip:active {
+    transform: translateY(1px);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .chip--zh [lang='zh-Hant'] {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    font-size: var(--text-md);
+    line-height: 1;
+  }
+
+  /* English explanation, shown on hover, keyboard focus or tap */
+  .chip__tip {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    z-index: 5;
+    width: max-content;
+    max-width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 400;
+    text-align: left;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-out);
+    pointer-events: none;
+  }
+
+  .chip:hover .chip__tip,
+  .chip:focus .chip__tip {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .filters__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    min-height: 1.5rem;
+    font-size: var(--text-sm);
+    font-weight: 700;
+  }
+
+  .filters__clear {
+    min-height: var(--tap);
+    padding: 0 var(--space-2);
+    border: 0;
+    background: none;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+
+  .filters__legend {
+    font-size: var(--text-xs);
+    color: var(--color-ink-soft);
+  }
+</style>

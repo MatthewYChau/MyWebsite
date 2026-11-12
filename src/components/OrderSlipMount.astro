@@ -1,0 +1,34 @@
+---
+/**
+ * Places the order slip on a page.
+ * The slip keeps its state when the visitor moves between pages
+ * (transition:persist), wherever each page chooses to put it.
+ */
+import OrderSlip from '../islands/OrderSlip';
+import { getProjects, projectHref, SECTION_META, SECTION_ORDER } from '../lib/content';
+
+interface Props {
+  /** "dock" = sidebar on wide screens (menu page). "float" = bottom drawer. */
+  mode?: 'dock' | 'float';
+}
+
+const { mode = 'float' } = Astro.props;
+
+const items = (await getProjects()).map((project) => ({
+  id: project.id,
+  code: project.data.code,
+  name: project.data.name,
+  section: project.data.section,
+  href: projectHref(project),
+}));
+
+const sections = SECTION_ORDER.map((key) => ({
+  key,
+  zh: SECTION_META[key].zh,
+  en: SECTION_META[key].en,
+}));
+---
+
+<div class:list={['slip-mount', `slip-mount--${mode}`, 'js-only']}>
+  <OrderSlip client:load transition:persist="order-slip" items={items} sections={sections} />
+</div>
