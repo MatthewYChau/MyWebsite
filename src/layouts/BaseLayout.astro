@@ -1,0 +1,97 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '@fontsource/noto-sans-tc/400.css';
+import '@fontsource/noto-sans-tc/700.css';
+import '@fontsource/noto-serif-tc/900.css';
+import '@fontsource/archivo-black/latin-400.css';
+import '@fontsource/caveat/latin-700.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import displayFontUrl from '@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2?url';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import OrderSlipMount from '../components/OrderSlipMount.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Path or full URL of the share image. Defaults to /og-default.png */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  /**
+   * Where the order slip sits.
+   * "float" = drawer at the bottom of the screen (default for project pages)
+   * "page"  = the page places the slip itself (the menu page docks it in a sidebar)
+   * "none"  = no order slip on this page
+   */
+  slip?: 'float' | 'page' | 'none';
+}
+
+const SITE_NAME = 'Matthew Chau';
+const DEFAULT_DESCRIPTION =
+  'Portfolio of Matthew Chau, a final-year Mechanical Engineering student at Toronto Metropolitan University. Project management, plant design and drones.';
+
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  slip = 'none',
+} = Astro.props;
+
+const pageTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL(ogImage, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#c8161d" />
+
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
+
+    <!-- Runs before first paint: marks that JavaScript is on, and keeps the mark after page swaps. -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.remove('no-js');
+        root.classList.add('js');
+        // Set once the visitor moves between pages, so the storefront only greets fresh arrivals.
+        document.addEventListener('astro:before-preparation', function () {
+          window.__cctNavigated = true;
+        });
+        document.addEventListener('astro:after-swap', function () {
+          document.documentElement.classList.remove('no-js');
+          document.documentElement.classList.add('js');
+        });
+      })();
+    </script>
+    <slot name="head" />
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot name="before" />
+    <SiteNav />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+    {slip === 'float' && <OrderSlipMount mode="float" />}
+  </body>
+</html>

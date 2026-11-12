@@ -1,0 +1,125 @@
+---
+const links = [
+  { href: '/', label: 'Order' },
+  { href: '/menu/', label: 'Full menu' },
+  { href: '/photos/', label: 'Photos' },
+  { href: '/kitchen/', label: 'Kitchen' },
+  { href: '/about/', label: 'About' },
+];
+
+const path = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="/" aria-label="Matthew Chau, home">
+      <span class="nav__badge" aria-hidden="true">MC</span>
+      <span class="nav__name">Matthew Chau</span>
+      <span class="nav__zh" lang="zh-Hant" aria-hidden="true">茶餐廳</span>
+    </a>
+    <nav aria-label="Main">
+      <ul class="nav__links">
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-nav);
+    background: var(--color-paper);
+    border-bottom: var(--border);
+  }
+
+  .nav__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+    min-height: var(--nav-height);
+  }
+
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap);
+    text-decoration: none;
+  }
+
+  .nav__badge {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--color-red);
+    color: var(--color-paper);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+  }
+
+  .nav__name {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .nav__zh {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    color: var(--color-red);
+  }
+
+  .nav__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-1);
+    margin-inline: calc(var(--space-2) * -1);
+  }
+
+  .nav__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding-inline: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .nav__links a:hover {
+    border-bottom-color: var(--color-ink);
+  }
+
+  .nav__links a[aria-current='page'] {
+    color: var(--color-red);
+    border-bottom-color: var(--color-red);
+  }
+
+  @media (min-width: 48rem) {
+    .nav__links {
+      gap: 0 var(--space-3);
+    }
+
+    .nav__links a {
+      font-size: var(--text-base);
+    }
+  }
+</style>
