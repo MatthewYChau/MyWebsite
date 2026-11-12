@@ -1,0 +1,76 @@
+---
+/** Handwritten paper strips taped to the wall. Text comes from src/data/specials.json. */
+import { getCollection } from 'astro:content';
+import SectionHeader from './SectionHeader.astro';
+
+const specials = await getCollection('specials');
+const tilts = [-2, 1.5, -1, 2.5, -1.5, 1];
+---
+
+<section class="wrap section specials" aria-labelledby="specials-title">
+  <SectionHeader id="specials-title" zh="是日推介" en="Today's specials" note="What I'm working on now" />
+  <ul class="specials__list">
+    {
+      specials.map((special, index) => (
+        <li class:list={['strip', `strip--${special.data.color}`]} style={`--tilt: ${tilts[index % tilts.length]}deg`}>
+          {special.data.text}
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .specials__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-6) var(--space-5);
+    padding-block: var(--space-3);
+  }
+
+  .strip {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 6.5rem;
+    padding: var(--space-5) var(--space-4) var(--space-4);
+    background: var(--strip-yellow);
+    box-shadow: var(--shadow-paper);
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 1.65rem;
+    line-height: 1.1;
+    text-align: center;
+    transform: rotate(var(--tilt));
+  }
+
+  /* a piece of tape */
+  .strip::before {
+    content: '';
+    position: absolute;
+    top: -0.6rem;
+    left: 50%;
+    width: 4.5rem;
+    height: 1.4rem;
+    background: rgb(255 255 255 / 0.55);
+    border-inline: 1px dashed rgb(27 23 20 / 0.18);
+    box-shadow: 0 1px 2px rgb(27 23 20 / 0.15);
+    transform: translateX(-50%) rotate(-3deg);
+  }
+
+  .strip--pink {
+    background: var(--strip-pink);
+  }
+
+  .strip--mint {
+    background: var(--strip-mint);
+  }
+
+  .strip--orange {
+    background: var(--strip-orange);
+  }
+
+  .strip--white {
+    background: var(--strip-white);
+  }
+</style>

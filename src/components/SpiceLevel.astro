@@ -1,0 +1,50 @@
+---
+interface Props {
+  level: number;
+}
+
+const { level } = Astro.props;
+const chilies = [1, 2, 3];
+---
+
+<span class="spice" role="img" aria-label={`Spice level ${level} of 3`}>
+  {
+    chilies.map((n) => (
+      <svg class:list={['spice__chili', { 'is-on': n <= level }]} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M14.6 7c3.4 1 5.4 4 4.9 7.4-.6 4.2-5.4 6.9-12.3 6.9-1.6 0-3-.2-4-.6 5.1-.6 7.2-3.5 7.5-7.3.2-2.6 1.3-5.2 3.9-6.4z" />
+        <path class="spice__stem" d="M14.6 7c.2-1.8 1.2-3.2 3-4" />
+      </svg>
+    ))
+  }
+</span>
+
+<style>
+  .spice {
+    display: inline-flex;
+    gap: 2px;
+    vertical-align: middle;
+  }
+
+  .spice__chili {
+    width: 1.125rem;
+    height: 1.125rem;
+    fill: none;
+    stroke: var(--color-ink-soft);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    opacity: 0.45;
+  }
+
+  .spice__chili.is-on {
+    fill: var(--color-red);
+    stroke: var(--color-red-deep);
+    opacity: 1;
+  }
+
+  .spice__stem {
+    fill: none;
+    stroke: var(--color-mint-deep);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+</style>

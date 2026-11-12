@@ -1,0 +1,325 @@
+---
+/**
+ * One menu item. The frame is themed (menu code, chilies, tick box).
+ * The content is plain: real project name, description and tags.
+ */
+import { Image } from 'astro:assets';
+import { projectHref, type Project } from '../lib/content';
+import OrderCheck from './OrderCheck.astro';
+import SpiceLevel from './SpiceLevel.astro';
+
+interface Props {
+  project: Project;
+  /** large = Today's Sets, medium = mains and desserts, compact = sides */
+  variant?: 'large' | 'medium' | 'compact';
+  heading?: 'h3' | 'h4';
+}
+
+const { project, variant = 'medium', heading: Heading = 'h3' } = Astro.props;
+const { data } = project;
+const cover = data.images[0];
+const showMedia = variant === 'large' && cover;
+---
+
+<article
+  class:list={['card', `card--${variant}`]}
+  data-card
+  data-made-at={data.madeAt}
+  data-status={data.status}
+  data-placeholder={String(data.placeholder)}
+>
+  {
+    showMedia && (
+      <div class="card__media">
+        <Image
+          src={cover.src}
+          alt={cover.alt}
+          widths={[360, 560, 800]}
+          sizes="(min-width: 48rem) 320px, 100vw"
+          width={800}
+          height={500}
+          loading="lazy"
+        />
+        {data.featuredSlot && (
+          <p class="set-badge">
+            <span class="set-badge__letter">{data.featuredSlot}</span>
+            <span lang="zh-Hant">餐</span>
+            <span class="visually-hidden"> Set {data.featuredSlot}</span>
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  <div class="card__body">
+    <header class="card__head">
+      <span class="code-badge">{data.code}</span>
+      <Heading class="card__name">
+        <a href={projectHref(project)}>{data.name}</a>
+      </Heading>
+    </header>
+
+    <p class="made-at">Made at: {data.madeAt}</p>
+    <p class="card__desc">{data.description}</p>
+
+    {
+      data.tags.length > 0 && (
+        <ul class="tags" aria-label="Tags">
+          {data.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <dl class="card__meta">
+      {
+        data.prepTime && (
+          <div>
+            <dt>Prep time</dt>
+            <dd>{data.prepTime}</dd>
+          </div>
+        )
+      }
+      <div>
+        <dt>Spice</dt>
+        <dd>
+          <SpiceLevel level={data.spice} />
+        </dd>
+      </div>
+    </dl>
+
+    <footer class="card__foot">
+      <p class="card__flags">
+        {data.status === 'in-progress' && <span class="status-badge">In progress</span>}
+        {data.placeholder && <span class="placeholder-badge">PLACEHOLDER</span>}
+      </p>
+      <OrderCheck id={project.id} name={data.name} />
+    </footer>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--color-paper);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-paper);
+    overflow: hidden;
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+
+  /* plastic sheen that slides across on hover */
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: var(--sheen);
+    background-size: 250% 100%;
+    background-position: 120% 0;
+    opacity: 0.6;
+    pointer-events: none;
+    transition: background-position var(--dur-slow) var(--ease-out);
+  }
+
+  .card:hover,
+  .card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .card:hover::after {
+    background-position: -20% 0;
+  }
+
+  .card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+  }
+
+  .card__head {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .card__name {
+    font-size: var(--text-md);
+    line-height: var(--leading-snug);
+    letter-spacing: 0;
+  }
+
+  .card__name a {
+    text-decoration: none;
+  }
+
+  /* the whole card is one link target; the tick box sits above it */
+  .card__name a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .card:hover .card__name a {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
+  }
+
+  .card__desc {
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    margin: auto 0 0;
+    padding-top: var(--space-2);
+    font-size: var(--text-xs);
+  }
+
+  .card__meta div {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .card__meta dt {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
+  .card__meta dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .card__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    margin-top: var(--space-1);
+    padding-top: var(--space-2);
+    border-top: 1px dashed var(--color-ink-soft);
+  }
+
+  .card__flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  /* ---------- Large: Today's Sets ---------- */
+
+  .card__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-paper-shade);
+    border-bottom: var(--border);
+  }
+
+  .card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 8 / 5;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  .card:hover .card__media :global(img) {
+    transform: scale(1.03);
+  }
+
+  .set-badge {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    padding: var(--space-1) var(--space-3);
+    border: var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--color-yellow);
+    color: var(--color-red);
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    font-size: var(--text-lg);
+    line-height: 1.2;
+  }
+
+  .set-badge__letter {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+  }
+
+  .card--large .card__name {
+    font-size: var(--text-lg);
+  }
+
+  .card--large .card__desc {
+    font-size: var(--text-base);
+  }
+
+  @media (min-width: 48rem) {
+    .card--large {
+      flex-direction: row;
+    }
+
+    .card--large .card__media {
+      flex: 0 0 38%;
+      border-right: var(--border);
+      border-bottom: 0;
+    }
+
+    .card--large .card__media :global(img) {
+      aspect-ratio: auto;
+    }
+
+    .card--large .card__body {
+      padding: var(--space-5);
+    }
+  }
+
+  /* ---------- Compact: Sides ---------- */
+
+  .card--compact .card__body {
+    gap: var(--space-1);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .card--compact .card__name {
+    font-size: var(--text-base);
+  }
+
+  .card--compact .card__desc {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .card--compact .code-badge {
+    min-width: 2.25rem;
+    height: 1.625rem;
+    font-size: var(--text-xs);
+  }
+</style>

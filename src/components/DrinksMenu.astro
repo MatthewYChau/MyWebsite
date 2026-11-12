@@ -1,0 +1,131 @@
+---
+/** Book reviews as a drinks list. Each book is paired with a cha chaan teng drink. */
+import { bookHref, getBooks } from '../lib/content';
+import Rating from './Rating.astro';
+
+const books = await getBooks();
+---
+
+<ol class="drinks laminated" data-filter-group>
+  {
+    books.map((book) => (
+      <li
+        class="drink"
+        data-placeholder-item={book.data.placeholder ? '' : undefined}
+        data-real-item={book.data.placeholder ? undefined : ''}
+      >
+        <a class="drink__link" href={bookHref(book)}>
+          <span class="code-badge">{book.data.code}</span>
+          <span class="drink__name">
+            <span class="drink__zh" lang="zh-Hant">
+              {book.data.pairedDrink.zh}
+            </span>
+            <span class="drink__en">{book.data.pairedDrink.en}</span>
+          </span>
+          <span class="drink__leader" aria-hidden="true" />
+          <span class="drink__book">
+            <span class="drink__title">{book.data.title}</span>
+            <span class="drink__author">by {book.data.author}</span>
+          </span>
+          <Rating value={book.data.rating} />
+        </a>
+      </li>
+    ))
+  }
+  <li class="empty-note" data-empty hidden>No drinks match the filters.</li>
+</ol>
+
+<style>
+  .drinks {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .drink + .drink {
+    border-top: 1px dashed var(--color-ink-soft);
+  }
+
+  .drink__link {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    padding-block: var(--space-3);
+    text-decoration: none;
+  }
+
+  .drink__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-2);
+  }
+
+  .drink__zh {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    font-size: var(--text-lg);
+    color: var(--color-red);
+    line-height: 1.1;
+  }
+
+  .drink__en {
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  .drink__leader {
+    display: none;
+  }
+
+  .drink__book {
+    grid-column: 2;
+    display: grid;
+  }
+
+  .drink__title {
+    font-weight: 700;
+  }
+
+  .drink__link:hover .drink__title {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+
+  .drink__author {
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  .drink__link :global(.rating) {
+    grid-column: 2;
+  }
+
+  @media (min-width: 48rem) {
+    .drinks {
+      padding: var(--space-4) var(--space-6);
+    }
+
+    .drink__link {
+      grid-template-columns: auto minmax(9rem, auto) 1fr minmax(0, auto) auto;
+      gap: var(--space-4);
+    }
+
+    /* dotted leader between the drink and the book, like a printed menu */
+    .drink__leader {
+      display: block;
+      align-self: end;
+      height: 0.6em;
+      border-bottom: 2px dotted var(--color-ink-soft);
+    }
+
+    .drink__book,
+    .drink__link :global(.rating) {
+      grid-column: auto;
+    }
+
+    .drink__book {
+      text-align: right;
+    }
+  }
+</style>

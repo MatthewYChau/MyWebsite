@@ -1,0 +1,203 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DrinksMenu from '../components/DrinksMenu.astro';
+import MenuFilters from '../components/MenuFilters.astro';
+import OrderSlipMount from '../components/OrderSlipMount.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ShopSign from '../components/ShopSign.astro';
+import Storefront from '../components/Storefront.astro';
+import TakeoutFlyer from '../components/TakeoutFlyer.astro';
+import VideoCard from '../components/VideoCard.astro';
+import WallSpecials from '../components/WallSpecials.astro';
+import {
+  getFeatured,
+  getPhotos,
+  getProjectsBySection,
+  getVideos,
+  SECTION_META,
+  SECTION_ORDER,
+} from '../lib/content';
+
+const featured = await getFeatured();
+const bySection = await getProjectsBySection();
+const featuredPhotos = (await getPhotos()).filter((photo) => photo.featured).slice(0, 6);
+const latestVideos = (await getVideos()).slice(0, 2);
+
+/** Card size per section: medium for mains and desserts, compact for sides. */
+const variantFor = { mains: 'medium', sides: 'compact', desserts: 'medium' } as const;
+---
+
+<BaseLayout title="Matthew Chau" slip="page">
+  <Fragment slot="head">
+    <!-- Decides before first paint whether to show the storefront. -->
+    <script is:inline>
+      (function () {
+        try {
+          var seen = localStorage.getItem('cct-entered') === '1';
+          var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var fromInside = window.__cctNavigated === true;
+          if (document.referrer) {
+            fromInside = fromInside || new URL(document.referrer).origin === location.origin;
+          }
+          if (!seen && !calm && !fromInside) {
+            document.documentElement.setAttribute('data-storefront', 'show');
+          }
+        } catch (error) {
+          /* storage blocked: skip the storefront */
+        }
+      })();
+    </script>
+  </Fragment>
+  <Storefront slot="before" />
+
+  <ShopSign />
+  <WallSpecials />
+
+  <div class="wrap order-area" id="menu">
+    <div class="menu-sheet laminated">
+      <MenuFilters />
+
+      <section class="menu-section" aria-labelledby="sets-title" data-filter-group>
+        <SectionHeader id="sets-title" zh="是日套餐" en="Today's Sets" note="Featured projects" />
+        <div class="card-grid card-grid--stack">
+          {featured.map((project) => <ProjectCard project={project} variant="large" />)}
+        </div>
+        <p class="empty-note" data-empty hidden>No sets match the filters.</p>
+      </section>
+
+      {
+        SECTION_ORDER.map((key) => (
+          <section class="menu-section" aria-labelledby={`${key}-title`} data-menu-section={key} data-filter-group>
+            <SectionHeader id={`${key}-title`} zh={SECTION_META[key].zh} en={SECTION_META[key].en} note={SECTION_META[key].note} />
+            <div class="card-grid">
+              {bySection[key].map((project) => (
+                <ProjectCard project={project} variant={variantFor[key]} />
+              ))}
+            </div>
+            <p class="empty-note" data-empty hidden>
+              Nothing in this section matches the filters.
+            </p>
+          </section>
+        ))
+      }
+    </div>
+
+    <aside class="order-area__slip" aria-label="Your order">
+      <OrderSlipMount mode="dock" />
+    </aside>
+  </div>
+
+  <section class="wrap section" aria-labelledby="drinks-title">
+    <SectionHeader id="drinks-title" zh="飲品" en="Drinks" note="Book reviews, each paired with a drink" />
+    <DrinksMenu />
+  </section>
+
+  <section class="photo-wall tiles" aria-labelledby="photos-title">
+    <div class="wrap section">
+      <SectionHeader id="photos-title" zh="相片牆" en="Photo Wall" note="My photography">
+        <a class="link section-head__more" href="/photos/">See the whole wall</a>
+      </SectionHeader>
+      <ul class="photo-strip" data-filter-group>
+        {
+          featuredPhotos.map((photo, index) => (
+            <li>
+              <PhotoFrame photo={photo} index={index} href="/photos/" square sizes="(min-width: 48rem) 190px, 45vw" />
+            </li>
+          ))
+        }
+        <li class="empty-note" data-empty hidden>No photos match the filters.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="kitchen-title">
+    <SectionHeader id="kitchen-title" en="Open Kitchen" note="Latest videos">
+      <a class="link section-head__more" href="/kitchen/">Watch all videos</a>
+    </SectionHeader>
+    <div class="video-grid" data-filter-group>
+      {latestVideos.map((video) => <VideoCard video={video} heading="h3" />)}
+      <p class="empty-note" data-empty hidden>No videos match the filters.</p>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="takeout-title">
+    <TakeoutFlyer />
+  </section>
+</BaseLayout>
+
+<style>
+  .order-area {
+    display: grid;
+    gap: var(--space-6);
+    padding-top: var(--space-4);
+  }
+
+  .menu-sheet {
+    min-width: 0;
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .menu-section + .menu-section {
+    margin-top: var(--space-7);
+  }
+
+  .menu-section :global(.empty-note) {
+    margin-top: var(--space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .menu-sheet {
+      padding: var(--space-6);
+    }
+  }
+
+  /* wide screens: menu on the left, order slip stuck to the right */
+  @media (min-width: 68.75rem) {
+    .order-area {
+      grid-template-columns: minmax(0, 1fr) var(--slip-width);
+      align-items: start;
+    }
+
+    .order-area__slip {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-5));
+    }
+  }
+
+  .photo-wall {
+    border-block: var(--border);
+  }
+
+  .photo-wall :global(.section-head) {
+    padding: var(--space-3) var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+  }
+
+  .photo-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-5);
+    padding-block: var(--space-4);
+  }
+
+  .photo-strip .empty-note {
+    grid-column: 1 / -1;
+    background: var(--color-paper);
+  }
+
+  @media (min-width: 48rem) {
+    .photo-strip {
+      grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    }
+  }
+
+  .video-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+</style>

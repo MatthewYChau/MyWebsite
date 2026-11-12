@@ -1,0 +1,22 @@
+---
+interface Props {
+  /** Chinese accent, for example 特餐. Optional. */
+  zh?: string;
+  /** Plain English title */
+  en: string;
+  /** Short plain note, for example "Work projects" */
+  note?: string;
+  id?: string;
+}
+
+const { zh, en, note, id } = Astro.props;
+---
+
+<header class="section-head">
+  <h2 class="section-head__title" id={id}>
+    {zh && <span class="section-head__zh" lang="zh-Hant">{zh}</span>}
+    <span class="section-head__en">{en}</span>
+  </h2>
+  {note && <p class="section-head__note">{note}</p>}
+  <slot />
+</header>

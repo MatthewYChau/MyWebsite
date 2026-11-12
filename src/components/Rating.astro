@@ -1,0 +1,33 @@
+---
+interface Props {
+  value: number;
+  max?: number;
+}
+
+const { value, max = 5 } = Astro.props;
+const stars = Array.from({ length: max }, (_, index) => index < value);
+---
+
+<span class="rating" role="img" aria-label={`Rated ${value} out of ${max}`}>
+  {stars.map((on) => <span class:list={['rating__star', { 'is-on': on }]} aria-hidden="true">★</span>)}
+</span>
+
+<style>
+  .rating {
+    display: inline-flex;
+    gap: 1px;
+    font-size: var(--text-md);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .rating__star {
+    color: var(--color-paper-shade);
+    -webkit-text-stroke: 1px var(--color-ink-soft);
+  }
+
+  .rating__star.is-on {
+    color: var(--color-red);
+    -webkit-text-stroke: 1px var(--color-red-deep);
+  }
+</style>

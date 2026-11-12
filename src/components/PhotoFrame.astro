@@ -1,0 +1,77 @@
+---
+/** A photo that looks taped to the tiled wall, with a slight tilt. */
+import { Image } from 'astro:assets';
+import type { Photo } from '../lib/content';
+
+interface Props {
+  photo: Photo;
+  index: number;
+  href: string;
+  /** Crop to a square (photo strip) or keep the photo's own shape (photo wall). */
+  square?: boolean;
+  sizes: string;
+  /** Extra data attributes for the lightbox */
+  lightboxIndex?: number;
+}
+
+const { photo, index, href, square = false, sizes, lightboxIndex } = Astro.props;
+const tilts = [-2.5, 1.5, -1, 2, -1.5, 2.5, -2, 1];
+const tilt = tilts[index % tilts.length];
+const label = `${photo.caption}, ${photo.location}`;
+---
+
+<a
+  class="frame"
+  href={href}
+  style={`--tilt: ${tilt}deg`}
+  data-lightbox-index={lightboxIndex}
+  data-placeholder-item={photo.placeholder ? '' : undefined}
+  data-real-item={photo.placeholder ? undefined : ''}
+>
+  {
+    square ? (
+      <Image src={photo.image} alt={label} width={480} height={480} fit="cover" widths={[240, 360, 480]} sizes={sizes} loading="lazy" />
+    ) : (
+      <Image src={photo.image} alt={label} widths={[320, 480, 720]} sizes={sizes} loading="lazy" />
+    )
+  }
+</a>
+
+<style>
+  .frame {
+    position: relative;
+    display: block;
+    padding: var(--space-2) var(--space-2) var(--space-5);
+    background: var(--strip-white);
+    box-shadow: var(--shadow-lift);
+    transform: rotate(var(--tilt));
+    transition: box-shadow var(--dur-fast) var(--ease-out);
+  }
+
+  /* tape */
+  .frame::before {
+    content: '';
+    position: absolute;
+    top: -0.55rem;
+    left: 50%;
+    z-index: 1;
+    width: 4rem;
+    height: 1.25rem;
+    background: rgb(255 255 255 / 0.6);
+    border-inline: 1px dashed rgb(27 23 20 / 0.18);
+    box-shadow: 0 1px 2px rgb(27 23 20 / 0.15);
+    transform: translateX(-50%) rotate(2deg);
+  }
+
+  .frame :global(img) {
+    width: 100%;
+    height: auto;
+    background: var(--color-paper-shade);
+  }
+
+  .frame:hover {
+    box-shadow:
+      0 0 0 3px var(--color-ink),
+      var(--shadow-lift);
+  }
+</style>

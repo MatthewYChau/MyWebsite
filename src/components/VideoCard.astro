@@ -1,0 +1,74 @@
+---
+/** A video with its title, date, description and a link to the related project. */
+import { render } from 'astro:content';
+import { formatDate, projectHref, type Project, type Video } from '../lib/content';
+import VideoFacade from './VideoFacade.astro';
+
+interface Props {
+  video: Video & { related?: Project };
+  heading?: 'h2' | 'h3';
+}
+
+const { video, heading: Heading = 'h2' } = Astro.props;
+const { Content } = await render(video);
+---
+
+<article
+  class="video-card"
+  data-placeholder-item={video.data.placeholder ? '' : undefined}
+  data-real-item={video.data.placeholder ? undefined : ''}
+>
+  <VideoFacade youtubeId={video.data.youtubeId} title={video.data.title} placeholder={video.data.placeholder} />
+  <div class="video-card__text">
+    <Heading class="video-card__title">{video.data.title}</Heading>
+    <p class="video-card__date">
+      <time datetime={video.data.date.toISOString().slice(0, 10)}>{formatDate(video.data.date)}</time>
+    </p>
+    <div class="video-card__desc">
+      <Content />
+    </div>
+    {
+      video.related && (
+        <p class="video-card__related">
+          From the menu:{' '}
+          <a class="link" href={projectHref(video.related)}>
+            {video.related.data.code} {video.related.data.name}
+          </a>
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .video-card {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    min-width: 0;
+  }
+
+  .video-card__title {
+    font-size: var(--text-md);
+    line-height: var(--leading-snug);
+  }
+
+  .video-card__date {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
+  .video-card__desc {
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  .video-card__related {
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+  }
+</style>
