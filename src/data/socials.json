@@ -1,0 +1,37 @@
+[
+  {
+    "platform": "linkedin",
+    "label": "LinkedIn",
+    "handle": "matthew-yuehung-chau",
+    "url": "https://www.linkedin.com/in/matthew-yuehung-chau",
+    "placeholder": false
+  },
+  {
+    "platform": "github",
+    "label": "GitHub",
+    "handle": "PLACEHOLDER",
+    "url": "https://github.com/",
+    "placeholder": true
+  },
+  {
+    "platform": "instagram",
+    "label": "Instagram",
+    "handle": "PLACEHOLDER",
+    "url": "https://www.instagram.com/",
+    "placeholder": true
+  },
+  {
+    "platform": "youtube",
+    "label": "YouTube",
+    "handle": "PLACEHOLDER",
+    "url": "https://www.youtube.com/",
+    "placeholder": true
+  },
+  {
+    "platform": "email",
+    "label": "Email",
+    "handle": "mattyc131@gmail.com",
+    "url": "mailto:mattyc131@gmail.com",
+    "placeholder": false
+  }
+]

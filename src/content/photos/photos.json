@@ -1,0 +1,50 @@
+[
+  {
+    "file": "photo-1.png",
+    "caption": "PLACEHOLDER photo 1",
+    "location": "PLACEHOLDER location",
+    "date": "2026-01-01",
+    "featured": true,
+    "placeholder": true
+  },
+  {
+    "file": "photo-2.png",
+    "caption": "PLACEHOLDER photo 2",
+    "location": "PLACEHOLDER location",
+    "date": "2026-01-02",
+    "featured": true,
+    "placeholder": true
+  },
+  {
+    "file": "photo-3.png",
+    "caption": "PLACEHOLDER photo 3",
+    "location": "PLACEHOLDER location",
+    "date": "2026-01-03",
+    "featured": true,
+    "placeholder": true
+  },
+  {
+    "file": "photo-4.png",
+    "caption": "PLACEHOLDER photo 4",
+    "location": "PLACEHOLDER location",
+    "date": "2026-01-04",
+    "featured": true,
+    "placeholder": true
+  },
+  {
+    "file": "photo-5.png",
+    "caption": "PLACEHOLDER photo 5",
+    "location": "PLACEHOLDER location",
+    "date": "2026-01-05",
+    "featured": true,
+    "placeholder": true
+  },
+  {
+    "file": "photo-6.png",
+    "caption": "PLACEHOLDER photo 6",
+    "location": "PLACEHOLDER location",
+    "date": "2026-01-06",
+    "featured": false,
+    "placeholder": true
+  }
+]

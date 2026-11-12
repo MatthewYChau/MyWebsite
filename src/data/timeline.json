@@ -1,0 +1,37 @@
+[
+  {
+    "org": "ASHRAE TMU",
+    "role": "Co-President",
+    "start": "Oct 2026",
+    "end": "Present",
+    "summary": "Competing in a data centre cooling design competition and rebuilding team operations."
+  },
+  {
+    "org": "Ontario Power Generation",
+    "role": "Modification Team Lead, Plant Design",
+    "start": "May 2025",
+    "end": "Aug 2026",
+    "summary": "16-month co-op. Led a portfolio of planned-outage and in-service plant modification projects under engineering change control, and built reporting tools used by 30+ projects across 3 departments."
+  },
+  {
+    "org": "TMU Research",
+    "role": "Undergraduate Research Assistant",
+    "start": "May 2024",
+    "end": "Sep 2024",
+    "summary": "Helped design a machine-learning model evaluating heat-pump cost and energy use for the TRCA, and analyzed energy use across five building types for the West5 Smart Solar Community."
+  },
+  {
+    "org": "TD Insurance",
+    "role": "Catastrophe Insurance Claims Advisor",
+    "start": "May 2023",
+    "end": "Aug 2023",
+    "summary": "Reviewed contractor damage reports to assess coverage on catastrophe insurance claims."
+  },
+  {
+    "org": "TMAV (Toronto Metropolitan Aerial Vehicles)",
+    "role": "Captain",
+    "start": "Nov 2022",
+    "end": "Present",
+    "summary": "Led the team's pivot from competition-only work to a long-term modular drone. Built recruiting and member-development systems. Manage budget, procurement and funding pitches."
+  }
+]
