@@ -1,13 +1,15 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import '@fontsource/noto-sans-tc/400.css';
-import '@fontsource/noto-sans-tc/700.css';
-import '@fontsource/noto-serif-tc/900.css';
+import '@fontsource/noto-sans/latin-400.css';
+import '@fontsource/noto-sans/latin-700.css';
 import '@fontsource/archivo-black/latin-400.css';
 import '@fontsource/caveat/latin-700.css';
+import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import displayFontUrl from '@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2?url';
+import bodyFontUrl from '@fontsource/noto-sans/files/noto-sans-latin-400-normal.woff2?url';
+import zhDisplayFontUrl from '../assets/fonts/noto-serif-tc-900.woff2?url';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import OrderSlipMount from '../components/OrderSlipMount.astro';
@@ -64,6 +66,8 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={zhDisplayFontUrl} as="font" type="font/woff2" crossorigin />
 
     <!-- Runs before first paint: marks that JavaScript is on, and keeps the mark after page swaps. -->
     <script is:inline>

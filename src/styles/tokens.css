@@ -33,7 +33,7 @@
   --strip-white: #fffdf5;
 
   /* ---------- Type ---------- */
-  --font-body: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  --font-body: 'Noto Sans', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
   --font-display: 'Archivo Black', 'Arial Black', Impact, 'Noto Sans TC', sans-serif;
   --font-zh-display: 'Noto Serif TC', 'Songti TC', 'PMingLiU', serif;
   --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', 'Noto Sans TC', cursive;
