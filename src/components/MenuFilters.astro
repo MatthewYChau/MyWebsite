@@ -135,9 +135,12 @@ import { MADE_AT } from '../content.config';
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2) var(--space-4);
-    min-height: 1.5rem;
     font-size: var(--text-sm);
     font-weight: 700;
+  }
+
+  .filters__status:has([data-filter-status]:empty) {
+    display: none;
   }
 
   .filters__clear {

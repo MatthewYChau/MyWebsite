@@ -17,13 +17,14 @@ export const SECTIONS = ['mains', 'sides', 'desserts'] as const;
 /** Every .md file in the folder except TEMPLATE.md */
 const markdownExceptTemplate = ['**/*.md', '!**/TEMPLATE.md'];
 
-/** Reads a JSON array and gives each row an id, so rows don't need one. */
+/** Reads a JSON array, gives each row an id, and remembers the order rows were written in. */
 function jsonArray(idField?: string) {
   return (text: string) => {
     const rows = JSON.parse(text) as Record<string, unknown>[];
     return rows.map((row, index) => ({
       id: idField && typeof row[idField] === 'string' ? (row[idField] as string) : String(index + 1),
       ...row,
+      order: index,
     }));
   };
 }
@@ -98,6 +99,7 @@ const photos = defineCollection({
     date: z.coerce.date(),
     featured: z.boolean().default(false),
     placeholder: z.boolean().default(false),
+    order: z.number(),
   }),
 });
 
@@ -109,6 +111,7 @@ const socials = defineCollection({
     handle: z.string().min(1),
     url: z.string().min(1),
     placeholder: z.boolean().default(false),
+    order: z.number(),
   }),
 });
 
@@ -117,6 +120,7 @@ const specials = defineCollection({
   schema: z.object({
     text: z.string().min(1),
     color: z.enum(['yellow', 'pink', 'mint', 'orange', 'white']).default('yellow'),
+    order: z.number(),
   }),
 });
 
@@ -128,6 +132,7 @@ const timeline = defineCollection({
     start: z.string().min(1),
     end: z.string().min(1),
     summary: z.string().min(1),
+    order: z.number(),
   }),
 });
 

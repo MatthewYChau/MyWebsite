@@ -212,10 +212,14 @@ input:focus-visible + .tickbox {
   text-underline-offset: 0.2em;
 }
 
+/* stays in view at the bottom of the slip, so Check out is always reachable */
 .slip__foot {
+  position: sticky;
+  bottom: calc(var(--space-5) * -1);
   margin-top: var(--space-4);
-  padding-top: var(--space-3);
+  padding-block: var(--space-3);
   border-top: 2px dashed var(--color-ink-soft);
+  background: var(--strip-white);
 }
 
 .slip__total {

@@ -1,9 +1,9 @@
 ---
 /** Handwritten paper strips taped to the wall. Text comes from src/data/specials.json. */
-import { getCollection } from 'astro:content';
+import { getOrdered } from '../lib/content';
 import SectionHeader from './SectionHeader.astro';
 
-const specials = await getCollection('specials');
+const specials = await getOrdered('specials');
 const tilts = [-2, 1.5, -1, 2.5, -1.5, 1];
 ---
 

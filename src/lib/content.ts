@@ -126,9 +126,15 @@ export interface Photo {
   placeholder: boolean;
 }
 
+/** Rows of a JSON data file, in the order they are written in the file. */
+export async function getOrdered<Name extends 'socials' | 'specials' | 'timeline' | 'photos'>(name: Name) {
+  const entries = await getCollection(name);
+  return entries.sort((a, b) => a.data.order - b.data.order);
+}
+
 /** Photos in the order they appear in photos.json. */
 export async function getPhotos(): Promise<Photo[]> {
-  const entries = await getCollection('photos');
+  const entries = await getOrdered('photos');
   return entries.map((entry) => {
     const match = photoFiles[`../content/photos/${entry.data.file}`];
     if (!match) {

@@ -4,10 +4,10 @@
  * The bio is written below. The timeline comes from src/data/timeline.json.
  * The resume button links to public/resume.pdf.
  */
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getOrdered } from '../lib/content';
 
-const timeline = await getCollection('timeline');
+const timeline = await getOrdered('timeline');
 ---
 
 <BaseLayout

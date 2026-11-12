@@ -109,10 +109,12 @@ const shareImage = shareSource
       </div>
     </header>
 
-    <div class="dish__body prose">
-      <Content />
-    </div>
+    <div class="dish__cols">
+      <div class="dish__body prose">
+        <Content />
+      </div>
 
+      <div class="dish__side">
     {
       data.images.length > 0 && (
         <section class="dish__block" aria-labelledby="gallery-title">
@@ -124,7 +126,7 @@ const shareImage = shareSource
                   src={image.src}
                   alt={image.alt}
                   widths={[400, 720, 1100]}
-                  sizes="(min-width: 48rem) 560px, 100vw"
+                  sizes="(min-width: 68.75rem) 440px, 100vw"
                   loading="lazy"
                 />
               </li>
@@ -142,6 +144,8 @@ const shareImage = shareSource
         </section>
       )
     }
+      </div>
+    </div>
 
     <p class="dish__back">
       <a class="btn" href="/#menu">Back to menu</a>
@@ -334,8 +338,24 @@ const shareImage = shareSource
 
   /* ---------- Body ---------- */
 
-  .dish__body {
+  .dish__cols {
+    display: grid;
+    gap: var(--space-6);
     margin-top: var(--space-6);
+  }
+
+  .dish__side {
+    display: grid;
+    gap: var(--space-6);
+    align-content: start;
+    min-width: 0;
+  }
+
+  .dish__side .dish__block {
+    margin-top: 0;
+  }
+
+  .dish__body {
     padding: var(--space-5) var(--space-4);
     border: var(--border);
     border-radius: var(--radius-lg);
@@ -366,7 +386,7 @@ const shareImage = shareSource
   .gallery {
     display: grid;
     gap: var(--space-4);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   }
 
   .gallery li {
@@ -386,10 +406,6 @@ const shareImage = shareSource
     transform: scale(1.02);
   }
 
-  .dish__video {
-    max-width: 48rem;
-  }
-
   .dish__back {
     margin-top: var(--space-7);
   }
@@ -404,6 +420,17 @@ const shareImage = shareSource
 
     .dish__body {
       padding: var(--space-6);
+    }
+  }
+
+  @media (min-width: 68.75rem) {
+    .dish__cols {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: start;
+    }
+
+    .gallery {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

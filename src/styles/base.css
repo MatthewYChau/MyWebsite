@@ -13,6 +13,8 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   min-height: 100vh;
   font-family: var(--font-body);
@@ -282,6 +284,10 @@ html.no-js .js-only {
   color: var(--color-ink-soft);
 }
 
+.section-head__note + .section-head__more {
+  margin-left: 0;
+}
+
 .section-head__more {
   margin-left: auto;
 }
@@ -479,6 +485,10 @@ html.no-js .js-only {
   border-radius: var(--radius-md);
   color: var(--color-ink-soft);
   font-size: var(--text-sm);
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 main:focus {

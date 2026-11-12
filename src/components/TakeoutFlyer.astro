@@ -1,8 +1,8 @@
 ---
 /** Social links as a takeout flyer. Links come from src/data/socials.json. */
-import { getCollection } from 'astro:content';
+import { getOrdered } from '../lib/content';
 
-const socials = await getCollection('socials');
+const socials = await getOrdered('socials');
 ---
 
 <div class="flyer" data-filter-group>

@@ -22,11 +22,9 @@ export default function Lightbox({ photos }: Props) {
   const [index, setIndex] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  const close = useCallback(() => {
-    setIndex(null);
-    triggerRef.current?.focus();
-  }, []);
+  const close = useCallback(() => setIndex(null), []);
 
   const step = useCallback(
     (amount: number) => {
@@ -60,8 +58,15 @@ export default function Lightbox({ photos }: Props) {
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-    if (index !== null && !dialog.open) dialog.showModal();
-    if (index === null && dialog.open) dialog.close();
+    if (index !== null && !dialog.open) {
+      dialog.showModal();
+      closeButtonRef.current?.focus();
+    }
+    if (index === null && dialog.open) {
+      dialog.close();
+      // Put keyboard focus back on the photo that opened the viewer.
+      triggerRef.current?.focus();
+    }
   }, [index]);
 
   const photo = index === null ? null : photos[index];
@@ -108,7 +113,7 @@ export default function Lightbox({ photos }: Props) {
                 <path d="M15 5l-7 7 7 7" />
               </svg>
             </button>
-            <button type="button" className="lightbox__button lightbox__button--close" onClick={close} autoFocus>
+            <button type="button" className="lightbox__button lightbox__button--close" onClick={close} ref={closeButtonRef}>
               Close
             </button>
             <button type="button" className="lightbox__button" onClick={() => step(1)} aria-label="Next photo">

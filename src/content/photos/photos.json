@@ -44,7 +44,7 @@
     "caption": "PLACEHOLDER photo 6",
     "location": "PLACEHOLDER location",
     "date": "2026-01-06",
-    "featured": false,
+    "featured": true,
     "placeholder": true
   }
 ]
