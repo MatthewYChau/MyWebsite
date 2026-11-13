@@ -153,6 +153,8 @@ Once a project has a real first image (its `alt` no longer says PLACEHOLDER), th
 
 **Storefront.** First-time visitors to the home page see the storefront. Clicking the door, scrolling or pressing Skip is remembered (localStorage), so it shows once. It is skipped for visitors who ask for reduced motion. To see it again, clear the site data in your browser or open a private window.
 
+**Animation speed and size.** The way in (door, aisle, table, menu) takes about 3.5 seconds. To make it quicker or slower, change `--pace` in `src/components/Storefront.astro` (1 is normal, 0.7 is quicker). The delivery drone takes about 3.6 seconds. Its length is `--drone-time` and its size is `--drone-w`, both in `src/islands/order-slip.css`. The bag is sized from the drone.
+
 **Spice and prep time.** The menu explains them as "Prep time is how long it took. Spice is how demanding it was." Change that line in `src/components/MenuFilters.astro` if you mean something else.
 
 ## Deploy to Cloudflare Pages from GitHub

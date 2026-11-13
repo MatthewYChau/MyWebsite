@@ -25,6 +25,22 @@
   --color-facade: #2a2622;
   --color-window: #f7c96b; /* warm window light */
 
+  /* Inside the restaurant (storefront animation) */
+  --room-ceiling: #f3ead4;
+  --room-wood: #c98d50;
+  --room-wood-dark: #8a5a2b;
+  --room-tile: #f7efdc;
+  --room-floor: #a9bdb5;
+  --room-grout: rgb(255 255 255 / 0.45);
+  --room-leather: #b9632b;
+  --room-leather-light: #d27d3f;
+  --room-leather-dark: #8c4519;
+  --room-table: #a2cf68;
+  --room-table-edge: #6f9a3e;
+  --room-chrome: #cdd2d6;
+  --room-dark: #2a211b;
+  --room-tea: #b9793f;
+
   /* Paper strips taped to the wall */
   --strip-yellow: #ffe680;
   --strip-pink: #ffc4cf;

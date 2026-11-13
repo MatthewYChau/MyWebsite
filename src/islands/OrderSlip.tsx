@@ -238,8 +238,8 @@ export default function OrderSlip({ items, sections }: Props) {
                   }}
                 >
                   <Drone />
+                  <div className="drone__bag" />
                 </div>
-                <div className="drone__bag" />
               </div>
             )}
           </>

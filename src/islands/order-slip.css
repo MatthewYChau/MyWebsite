@@ -453,7 +453,12 @@ body:has(.slip-mount) {
   font-family: var(--font-body);
 }
 
-/* ---------- Delivery drone (under 2 seconds) ---------- */
+/*
+ * ---------- Delivery drone ----------
+ * Flies in, hovers over the receipt, lowers the order, then flies off.
+ * --drone-time is the whole flight. --drone-w is the size of the drone;
+ * the bag is sized from it.
+ */
 
 .drone-run {
   position: fixed;
@@ -462,16 +467,14 @@ body:has(.slip-mount) {
   pointer-events: none;
 }
 
-.drone,
-.drone__bag {
-  position: absolute;
-  top: 9vh;
-  left: 0;
-}
-
 .drone {
-  width: 120px;
-  animation: drone-fly 1800ms var(--ease-in-out) both;
+  --drone-time: 3600ms;
+  --drone-w: clamp(150px, 20vw, 250px);
+  position: absolute;
+  top: 6vh;
+  left: 0;
+  width: var(--drone-w);
+  animation: drone-fly var(--drone-time) linear both;
 }
 
 .drone__body {
@@ -506,57 +509,95 @@ body:has(.slip-mount) {
   animation: rotor-spin 90ms linear infinite alternate;
 }
 
+/* the takeout bag hanging under the drone */
 .drone__bag {
-  width: 34px;
-  height: 38px;
-  margin: 50px 0 0 43px;
+  position: absolute;
+  top: 88%;
+  left: 50%;
+  width: calc(var(--drone-w) * 0.34);
+  height: calc(var(--drone-w) * 0.36);
+  margin-left: calc(var(--drone-w) * -0.17);
   border: 3px solid var(--color-ink);
-  border-radius: 3px 3px 6px 6px;
+  border-radius: 4px 4px 8px 8px;
   background: var(--strip-orange);
-  animation: bag-drop 1800ms var(--ease-in-out) both;
+  animation: bag-drop var(--drone-time) linear both;
 }
 
+/* bag handles */
 .drone__bag::before {
   content: '';
   position: absolute;
-  top: -12px;
-  left: 6px;
-  width: 16px;
-  height: 12px;
+  bottom: 100%;
+  left: 22%;
+  width: 56%;
+  height: calc(var(--drone-w) * 0.1);
   border: 3px solid var(--color-ink);
   border-bottom: 0;
-  border-radius: 8px 8px 0 0;
+  border-radius: 999px 999px 0 0;
 }
 
+/* a red stripe, like a takeout bag label */
+.drone__bag::after {
+  content: '';
+  position: absolute;
+  top: 38%;
+  right: 0;
+  left: 0;
+  height: 22%;
+  background: var(--color-red);
+}
+
+/* fly in, hover and bob over the receipt, then leave once the bag is down */
 @keyframes drone-fly {
   0% {
-    transform: translate(-140px, 0) rotate(8deg);
+    transform: translate(-115%, 10px) rotate(9deg);
+    animation-timing-function: cubic-bezier(0.35, 0.3, 0.3, 1);
   }
-  42%,
+  30% {
+    transform: translate(calc(50vw - 50%), 22px) rotate(0deg);
+    animation-timing-function: ease-in-out;
+  }
+  36% {
+    transform: translate(calc(50vw - 50%), 10px) rotate(0deg);
+    animation-timing-function: ease-in-out;
+  }
+  46% {
+    transform: translate(calc(50vw - 50%), 22px) rotate(0deg);
+    animation-timing-function: ease-in-out;
+  }
   56% {
-    transform: translate(calc(50vw - 60px), 18px) rotate(0deg);
+    transform: translate(calc(50vw - 50%), 12px) rotate(0deg);
+    animation-timing-function: ease-in-out;
+  }
+  70% {
+    transform: translate(calc(50vw - 50%), 4px) rotate(0deg);
+    animation-timing-function: ease-in-out;
+  }
+  84% {
+    transform: translate(calc(50vw - 50%), 10px) rotate(-4deg);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5);
   }
   100% {
-    transform: translate(calc(100vw + 20px), -30px) rotate(10deg);
+    transform: translate(calc(100vw + 15%), -40px) rotate(10deg);
   }
 }
 
+/* carried until the drone has hovered a while, then dropped onto the receipt */
 @keyframes bag-drop {
-  0% {
-    transform: translate(-140px, 0);
+  0%,
+  56% {
+    transform: none;
     opacity: 1;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6);
   }
-  42%,
-  52% {
-    transform: translate(calc(50vw - 60px), 18px);
+  76% {
+    transform: translateY(34vh) rotate(5deg);
     opacity: 1;
+    animation-timing-function: linear;
   }
-  88% {
-    transform: translate(calc(50vw - 60px), 34vh);
-    opacity: 1;
-  }
+  84%,
   100% {
-    transform: translate(calc(50vw - 60px), 36vh);
+    transform: translateY(35vh) rotate(5deg);
     opacity: 0;
   }
 }

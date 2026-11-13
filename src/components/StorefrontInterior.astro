@@ -1,0 +1,259 @@
+---
+/**
+ * What you see after the storefront doors open:
+ * 1. the dining room, walking down the aisle between the booths
+ * 2. sitting down at a green glass table
+ * 3. picking the menu up off the table, which becomes the menu page
+ *
+ * Everything is drawn in SVG and CSS. The room itself is worked out in
+ * src/lib/room-scene.ts. The timing lives in Storefront.astro.
+ */
+import { buildRoom, clockPosition, ROOM_VIEW, VANISHING_POINT } from '../lib/room-scene';
+
+const room = buildRoom();
+const clock = clockPosition();
+const viewBox = `0 0 ${ROOM_VIEW.width} ${ROOM_VIEW.height}`;
+---
+
+<div class="interior" aria-hidden="true">
+  <!-- 1. the dining room -->
+  <div class="interior__camera">
+    <svg
+      class="interior__room"
+      viewBox={viewBox}
+      preserveAspectRatio="xMidYMid slice"
+      style={`transform-origin: ${VANISHING_POINT.x} ${VANISHING_POINT.y}`}
+      focusable="false"
+    >
+      <g id="cct-room">
+        {
+          room.map((shape) =>
+            shape.kind === 'polygon' ? (
+              <polygon class={shape.cls} points={shape.points} />
+            ) : (
+              <polyline class={shape.cls} points={shape.points} />
+            ),
+          )
+        }
+        <circle class="r-clock" cx={clock.cx} cy={clock.cy} r={clock.r}></circle>
+        <polyline class="r-ink" points={`${clock.cx},${clock.cy - clock.r * 0.65} ${clock.cx},${clock.cy} ${clock.cx + clock.r * 0.5},${clock.cy + clock.r * 0.2}`}></polyline>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 2. the table we sit at, seen from the seat -->
+  <div class="interior__table">
+    <svg class="interior__tabletop" viewBox={viewBox} preserveAspectRatio="xMidYMid slice" focusable="false">
+      <!-- tiled wall and the booth seat opposite -->
+      <rect class="r-wall-tile" width="1600" height="900"></rect>
+      <g class="r-grout">
+        <polyline points="0,60 1600,60"></polyline>
+        <polyline points="200,0 200,140"></polyline>
+        <polyline points="500,0 500,140"></polyline>
+        <polyline points="800,0 800,140"></polyline>
+        <polyline points="1100,0 1100,140"></polyline>
+        <polyline points="1400,0 1400,140"></polyline>
+      </g>
+      <rect class="r-leather" x="-40" y="120" width="1680" height="330" rx="34"></rect>
+      <rect class="r-leather-top" x="-40" y="120" width="1680" height="26" rx="13"></rect>
+      <g class="r-seam">
+        <polyline points="330,170 330,430"></polyline>
+        <polyline points="645,170 645,430"></polyline>
+        <polyline points="955,170 955,430"></polyline>
+        <polyline points="1270,170 1270,430"></polyline>
+      </g>
+
+      <!-- green glass table top with paper menus under the glass -->
+      <polygon class="r-table" points="170,400 1430,400 1960,900 -360,900"></polygon>
+      <polygon class="r-paper" points="455,470 770,470 745,690 350,690"></polygon>
+      <polygon class="r-paper" points="830,470 1145,470 1250,690 855,690"></polygon>
+      <g class="r-ink t-faint">
+        <polyline points="470,510 750,510"></polyline>
+        <polyline points="455,550 745,550"></polyline>
+        <polyline points="440,590 742,590"></polyline>
+        <polyline points="425,630 738,630"></polyline>
+        <polyline points="850,510 1130,510"></polyline>
+        <polyline points="852,550 1150,550"></polyline>
+        <polyline points="854,590 1170,590"></polyline>
+        <polyline points="856,630 1190,630"></polyline>
+      </g>
+      <polygon class="t-glass" points="170,400 1430,400 1960,900 -360,900"></polygon>
+      <polygon class="t-shine" points="330,404 470,404 180,900 -60,900"></polygon>
+      <polygon class="t-shine" points="560,404 600,404 380,900 310,900"></polygon>
+      <polygon class="r-chrome" points="170,400 1430,400 1444,418 156,418"></polygon>
+
+      <!-- cup of milk tea -->
+      <ellipse class="t-shadow" cx="610" cy="470" rx="100" ry="20"></ellipse>
+      <ellipse class="t-china" cx="600" cy="462" rx="96" ry="20"></ellipse>
+      <path class="t-china" d="M542 392h116l-12 62a14 14 0 0 1-14 11h-64a14 14 0 0 1-14-11z"></path>
+      <path class="t-handle" d="M656 404c34-4 38 36 2 40"></path>
+      <ellipse class="t-china" cx="600" cy="392" rx="58" ry="13"></ellipse>
+      <ellipse class="t-tea" cx="600" cy="393" rx="50" ry="10"></ellipse>
+
+      <!-- condiment tin and sauce bottle -->
+      <ellipse class="t-shadow" cx="1020" cy="462" rx="78" ry="15"></ellipse>
+      <rect class="r-chrome" x="950" y="350" width="100" height="108" rx="6"></rect>
+      <ellipse class="t-china" cx="1000" cy="350" rx="50" ry="11"></ellipse>
+      <rect class="r-counter" x="1062" y="352" width="34" height="106" rx="6"></rect>
+      <rect class="r-dark" x="1068" y="334" width="22" height="22" rx="4"></rect>
+    </svg>
+
+    <!-- 3. the menu lying on the table. It lifts up and becomes the page. -->
+    <div class="pickup">
+      <div class="pickup__card">
+        <span class="pickup__band">
+          <span lang="zh-Hant">餐牌</span>
+          <span>Menu</span>
+        </span>
+        <span class="pickup__lines"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* ---------- room colours (tokens.css) ---------- */
+  .r-ceiling { fill: var(--room-ceiling); }
+  .r-floor { fill: var(--room-floor); }
+  .r-wall-upper { fill: var(--room-wood); }
+  .r-wall-tile { fill: var(--room-tile); }
+  .r-rail { fill: var(--room-wood-dark); }
+  .r-dark { fill: var(--room-dark); }
+  .r-glow { fill: var(--color-window); opacity: 0.55; }
+  .r-counter { fill: var(--color-red); }
+  .r-chrome { fill: var(--room-chrome); }
+  .r-light { fill: var(--strip-white); }
+  .r-leather { fill: var(--room-leather); }
+  .r-leather-top { fill: var(--room-leather-light); }
+  .r-leather-side,
+  .r-leather-front { fill: var(--room-leather-dark); }
+  .r-table { fill: var(--room-table); }
+  .r-table-edge { fill: var(--room-table-edge); }
+  .r-paper { fill: var(--strip-white); }
+  .r-paper-yellow { fill: var(--strip-yellow); }
+  .r-paper-pink { fill: var(--strip-pink); }
+  .r-paper-mint { fill: var(--strip-mint); }
+  .r-clock { fill: var(--strip-white); stroke: var(--color-ink); stroke-width: 2; }
+
+  .r-grout,
+  .r-ink,
+  .r-seam {
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  .r-grout { stroke: var(--room-grout); stroke-width: 1.5; }
+  .r-ink { stroke: var(--color-ink); stroke-width: 1.5; opacity: 0.55; }
+  .r-seam { stroke: var(--room-leather-dark); stroke-width: 3; }
+
+  .t-faint { opacity: 0.3; }
+  .t-glass { fill: var(--room-table); opacity: 0.5; }
+  .t-shine { fill: #fff; opacity: 0.16; }
+  .t-shadow { fill: var(--color-ink); opacity: 0.18; }
+  .t-china { fill: var(--strip-white); stroke: var(--room-chrome); stroke-width: 2; }
+  .t-tea { fill: var(--room-tea); }
+  .t-handle { fill: none; stroke: var(--strip-white); stroke-width: 12; stroke-linecap: round; }
+
+  /* ---------- layers ---------- */
+  .interior {
+    position: absolute;
+    inset: 0;
+    background: var(--room-tile);
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .interior__camera,
+  .interior__room,
+  .interior__table,
+  .interior__tabletop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The room is drawn larger than its frame, so it can be shown from further back. */
+  .interior__room {
+    overflow: visible;
+    /* how far back the walk starts, and how close it ends */
+    --walk-from: 0.8;
+    --walk-to: 2.35;
+  }
+
+  /* On a tall, narrow screen start further back, so the booths on both sides are in view. */
+  @media (max-aspect-ratio: 1 / 1) {
+    .interior__room {
+      --walk-from: 0.5;
+      --walk-to: 1.5;
+    }
+  }
+
+  .interior__table {
+    transform: translateY(101%);
+  }
+
+  /* ---------- the menu on the table ---------- */
+  .pickup {
+    position: absolute;
+    inset: 0;
+    perspective: 900px;
+    perspective-origin: 50% 35%;
+  }
+
+  .pickup__card {
+    position: absolute;
+    top: 74%;
+    left: 50%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    width: min(60vw, 19rem);
+    aspect-ratio: 3 / 4;
+    border: 3px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    box-shadow: 0 18px 30px -10px rgb(27 23 20 / 0.55);
+    overflow: hidden;
+    transform: translate(-50%, -50%) rotateX(63deg) rotateZ(-7deg) scale(0.66);
+  }
+
+  /* plastic sheen on the laminated card */
+  .pickup__card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--sheen);
+    background-size: 250% 100%;
+    background-position: 60% 0;
+    opacity: 0.6;
+  }
+
+  .pickup__band {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-2);
+    background: var(--color-red);
+    color: var(--color-paper);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    text-transform: uppercase;
+  }
+
+  .pickup__band [lang='zh-Hant'] {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    font-size: var(--text-xl);
+    color: var(--color-yellow);
+  }
+
+  /* rows of "menu items" */
+  .pickup__lines {
+    margin: var(--space-4);
+    background-image: linear-gradient(var(--color-ink) 3px, transparent 3px);
+    background-size: 100% 1.5rem;
+    opacity: 0.22;
+  }
+</style>
