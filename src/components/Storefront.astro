@@ -35,7 +35,6 @@
           <span class="door__leaf door__leaf--right" aria-hidden="true">
             <span class="door__sticker">PUSH</span>
           </span>
-          <span class="door__hours" aria-hidden="true">Graduating April 2027</span>
         </button>
 
         <div class="window window--right" aria-hidden="true">
@@ -324,20 +323,6 @@
     transform: translateX(-50%);
   }
 
-  .door__hours {
-    position: absolute;
-    right: 0;
-    bottom: var(--space-3);
-    left: 0;
-    padding-inline: var(--space-1);
-    color: #2a1c0c;
-    font-size: 0.7rem;
-    font-weight: 700;
-    line-height: 1.2;
-    text-align: center;
-    transition: opacity var(--dur-base) var(--ease-out);
-  }
-
   .door:hover .door__leaf--left {
     transform: rotateY(12deg);
   }
@@ -369,7 +354,6 @@
     transform: rotateY(-82deg);
   }
 
-  .storefront.is-opening .door__hours,
   .storefront.is-opening .storefront__hint,
   .storefront.is-opening .storefront__skip {
     opacity: 0;
