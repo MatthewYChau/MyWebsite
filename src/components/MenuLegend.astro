@@ -1,0 +1,147 @@
+---
+/**
+ * Explains the marks on the menu: chilies (spice) and the leaf (vegan).
+ * "card" sits in the sidebar above the order slip on wide screens.
+ * "inline" sits in the filter box on smaller screens.
+ * Only one of the two shows at a time.
+ */
+import SpiceLevel from './SpiceLevel.astro';
+import VeganLeaf from './VeganLeaf.astro';
+
+interface Props {
+  variant?: 'card' | 'inline';
+}
+
+const { variant = 'card' } = Astro.props;
+
+const levels = [
+  { level: 1, name: 'Mild', text: 'light effort' },
+  { level: 2, name: 'Medium', text: 'a solid challenge' },
+  { level: 3, name: 'Hot', text: 'the most demanding' },
+];
+---
+
+<section class:list={['legend', `legend--${variant}`]} aria-label="Menu legend">
+  <p class="legend__title">
+    <span lang="zh-Hant">圖例</span>
+    <span>Legend</span>
+  </p>
+  <dl class="legend__list">
+    {
+      levels.map((item) => (
+        <div class="legend__row">
+          <dt>
+            <SpiceLevel level={item.level} />
+          </dt>
+          <dd>
+            <strong>{item.name}</strong> {item.text}
+          </dd>
+        </div>
+      ))
+    }
+    <div class="legend__row">
+      <dt>
+        <VeganLeaf />
+      </dt>
+      <dd>
+        <strong>Vegan</strong> still in progress
+      </dd>
+    </div>
+  </dl>
+  <p class="legend__note">Spice is how demanding it was. Prep time is how long it took.</p>
+</section>
+
+<style>
+  .legend {
+    font-size: var(--text-sm);
+  }
+
+  .legend__title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .legend__title [lang='zh-Hant'] {
+    font-family: var(--font-zh-display);
+    font-weight: 900;
+    font-size: var(--text-md);
+    color: var(--color-red);
+  }
+
+  .legend__list {
+    display: grid;
+    gap: var(--space-1) var(--space-5);
+    margin: var(--space-2) 0 0;
+  }
+
+  .legend__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 1.75rem;
+  }
+
+  /* same width for every mark, so the words line up */
+  .legend__row dt {
+    display: flex;
+    flex: none;
+    width: 3.75rem;
+  }
+
+  .legend__row dd {
+    margin: 0;
+    line-height: var(--leading-snug);
+    color: var(--color-ink-soft);
+  }
+
+  .legend__row strong {
+    color: var(--color-ink);
+  }
+
+  .legend__note {
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    line-height: var(--leading-snug);
+    color: var(--color-ink-soft);
+  }
+
+  /* ---------- Sidebar card (wide screens only) ---------- */
+
+  .legend--card {
+    display: none;
+    flex: none;
+    padding: var(--space-3) var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--color-paper);
+    box-shadow: var(--shadow-paper);
+  }
+
+  /* ---------- In the filter box (smaller screens) ---------- */
+
+  .legend--inline {
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--color-ink-soft);
+  }
+
+  @media (min-width: 30rem) {
+    .legend--inline .legend__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 68.75rem) {
+    .legend--card {
+      display: block;
+    }
+
+    .legend--inline {
+      display: none;
+    }
+  }
+</style>

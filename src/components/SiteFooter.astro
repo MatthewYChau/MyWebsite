@@ -19,10 +19,10 @@ const year = new Date().getFullYear();
   }
 
   .footer__inner {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: var(--space-2) var(--space-5);
+    /* both lines sit on the left, clear of the order slip tab in the right corner */
+    display: grid;
+    justify-items: start;
+    gap: var(--space-1);
     padding-block: var(--space-5);
     /* leaves room for the order slip drawer on small screens */
     padding-bottom: calc(var(--space-5) + var(--slip-clearance, 0px));

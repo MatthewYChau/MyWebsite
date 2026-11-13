@@ -1,0 +1,48 @@
+[
+  {
+    "section": "education",
+    "title": "Bachelor of Mechanical Engineering (BEng)",
+    "place": "Toronto Metropolitan University",
+    "dates": "Sep 2022 – Apr 2027",
+    "items": [
+      "Relevant courses: Manufacturing Fundamentals, Materials Science, Electrical Circuits, Computer Programming, Statistics, Control Systems, Fluid Mechanics, Applied Thermodynamics, Heat Transfer"
+    ]
+  },
+  {
+    "section": "skills",
+    "title": "CAD & Design",
+    "items": ["SolidWorks", "Fusion 360", "Adobe Illustrator", "Tinkercad", "Photoshop", "Figma", "Canva"]
+  },
+  {
+    "section": "skills",
+    "title": "Programming",
+    "items": ["Python (Anaconda)", "MATLAB", "SQL", "RETScreen Expert", "HTML", "CSS", "JavaScript"]
+  },
+  {
+    "section": "skills",
+    "title": "Frameworks",
+    "items": ["Matplotlib", "NumPy", "Pandas", "scikit-learn", "Seaborn"]
+  },
+  {
+    "section": "skills",
+    "title": "Office",
+    "items": ["Power BI", "Power Automate", "Power Apps", "Microsoft Excel", "Microsoft Word", "Microsoft Teams", "Notion", "Google Apps"]
+  },
+  {
+    "section": "skills",
+    "title": "Electrical",
+    "items": ["Soldering", "Wire crimping", "Circuitry"]
+  },
+  {
+    "section": "certifications",
+    "title": "Certifications",
+    "items": [
+      "CSWP (Certified SolidWorks Professional)",
+      "CSWA (Certified SolidWorks Associate)",
+      "Basic Drone Pilot License",
+      "Python (Coursera)",
+      "Laser Cutting & Engraving (MPL)",
+      "G Driver's License"
+    ]
+  }
+]

@@ -136,4 +136,17 @@ const timeline = defineCollection({
   }),
 });
 
-export const collections = { projects, books, videos, photos, socials, specials, timeline };
+/** Education, skills and certifications for the résumé page. Work history comes from the timeline. */
+const resume = defineCollection({
+  loader: file('src/data/resume.json', { parser: jsonArray() }),
+  schema: z.object({
+    section: z.enum(['education', 'skills', 'certifications']),
+    title: z.string().min(1),
+    place: z.string().nullish(),
+    dates: z.string().nullish(),
+    items: z.array(z.string()).default([]),
+    order: z.number(),
+  }),
+});
+
+export const collections = { projects, books, videos, photos, socials, specials, timeline, resume };

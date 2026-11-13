@@ -127,7 +127,7 @@ export interface Photo {
 }
 
 /** Rows of a JSON data file, in the order they are written in the file. */
-export async function getOrdered<Name extends 'socials' | 'specials' | 'timeline' | 'photos'>(name: Name) {
+export async function getOrdered<Name extends 'socials' | 'specials' | 'timeline' | 'photos' | 'resume'>(name: Name) {
   const entries = await getCollection(name);
   return entries.sort((a, b) => a.data.order - b.data.order);
 }

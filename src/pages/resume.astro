@@ -1,0 +1,397 @@
+---
+/**
+ * Print-ready résumé. The order slip's receipt links here after checkout.
+ * It lists every project, and src/scripts/resume.ts hides the ones that were not ordered.
+ * Education, skills and certifications come from src/data/resume.json.
+ * Work history comes from src/data/timeline.json. Contact links come from src/data/socials.json.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getOrdered, getProjects, projectHref } from '../lib/content';
+
+const projects = await getProjects();
+const timeline = await getOrdered('timeline');
+const rows = await getOrdered('resume');
+const socials = (await getOrdered('socials')).filter((social) => !social.data.placeholder);
+
+const education = rows.filter((row) => row.data.section === 'education');
+const skills = rows.filter((row) => row.data.section === 'skills');
+const certifications = rows.filter((row) => row.data.section === 'certifications').flatMap((row) => row.data.items);
+
+const email = socials.find((social) => social.data.platform === 'email');
+const linkedin = socials.find((social) => social.data.platform === 'linkedin');
+const siteHost = Astro.site?.host;
+---
+
+<BaseLayout
+  title="Résumé"
+  description="A print-ready résumé for Matthew Chau, built from the projects you ticked on the menu."
+>
+  <div class="wrap resume-page">
+    <div class="resume-bar">
+      <p class="resume-bar__status" data-resume-status aria-live="polite">Showing every project.</p>
+      <p class="resume-bar__actions">
+        <button type="button" class="btn js-only" data-resume-print>Save as PDF</button>
+        <a class="btn btn--quiet" href="/#menu">Back to menu</a>
+      </p>
+      <p class="resume-bar__hint js-only">Save as PDF opens the print window. Pick "Save as PDF" as the printer.</p>
+    </div>
+
+    <article class="resume" data-resume>
+      <header class="resume__head">
+        <h1>Matthew Chau</h1>
+        <p class="resume__contact">
+          {email && <a href={email.data.url}>{email.data.handle}</a>}
+          {linkedin && <a href={linkedin.data.url}>linkedin.com/in/{linkedin.data.handle}</a>}
+          {siteHost && <a href="/">{siteHost}</a>}
+        </p>
+      </header>
+
+      <section class="resume__section" aria-labelledby="resume-education">
+        <h2 id="resume-education">Education</h2>
+        {
+          education.map(({ data }) => (
+            <div class="entry">
+              <div class="entry__top">
+                <h3>{data.title}</h3>
+                {data.dates && <p class="entry__dates">{data.dates}</p>}
+              </div>
+              {data.place && <p class="entry__place">{data.place}</p>}
+              {data.items.map((item) => (
+                <p class="entry__text">{item}</p>
+              ))}
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="resume__section" aria-labelledby="resume-experience">
+        <h2 id="resume-experience">Experience</h2>
+        {
+          timeline.map(({ data }) => (
+            <div class="entry">
+              <div class="entry__top">
+                <h3>{data.role}</h3>
+                <p class="entry__dates">
+                  {data.start} – {data.end}
+                </p>
+              </div>
+              <p class="entry__place">{data.org}</p>
+              <p class="entry__text">{data.summary}</p>
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="resume__section" aria-labelledby="resume-projects">
+        <h2 id="resume-projects">Projects</h2>
+        <ul class="resume__projects">
+          {
+            projects.map((project) => (
+              <li class="entry" data-resume-project={project.id}>
+                <div class="entry__top">
+                  <h3>
+                    <a href={projectHref(project)}>{project.data.name}</a>
+                    {project.data.status === 'in-progress' && <span class="entry__flag"> (in progress)</span>}
+                  </h3>
+                  {project.data.prepTime && <p class="entry__dates">{project.data.prepTime}</p>}
+                </div>
+                <p class="entry__place">{project.data.madeAt}</p>
+                <p class="entry__text">{project.data.description}</p>
+                {project.data.tags.length > 0 && <p class="entry__tags">{project.data.tags.join(' · ')}</p>}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="resume__section" aria-labelledby="resume-skills">
+        <h2 id="resume-skills">Skills</h2>
+        <dl class="resume__skills">
+          {
+            skills.map(({ data }) => (
+              <div>
+                <dt>{data.title}</dt>
+                <dd>{data.items.join(', ')}</dd>
+              </div>
+            ))
+          }
+          {
+            certifications.length > 0 && (
+              <div>
+                <dt>Certifications</dt>
+                <dd>{certifications.join(', ')}</dd>
+              </div>
+            )
+          }
+        </dl>
+      </section>
+    </article>
+  </div>
+</BaseLayout>
+
+<script>
+  import '../scripts/resume';
+</script>
+
+<style>
+  .resume-page {
+    max-width: 54rem;
+    padding-top: var(--space-5);
+  }
+
+  /* ---------- Toolbar (screen only) ---------- */
+
+  .resume-bar {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding: var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .resume-bar__status {
+    font-weight: 700;
+  }
+
+  .resume-bar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .resume-bar__hint {
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  /* ---------- The sheet: plain on purpose, so it prints cleanly ---------- */
+
+  .resume {
+    padding: var(--space-5) var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    box-shadow: var(--shadow-sheet);
+    font-size: var(--text-sm);
+    line-height: 1.45;
+  }
+
+  .resume__head {
+    padding-bottom: var(--space-3);
+    border-bottom: 3px solid var(--color-ink);
+    text-align: center;
+  }
+
+  .resume__head h1 {
+    font-size: var(--text-2xl);
+    text-transform: uppercase;
+  }
+
+  .resume__contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 var(--space-4);
+    margin-top: var(--space-2);
+    font-weight: 700;
+  }
+
+  .resume__contact a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    text-decoration-thickness: 1px;
+    overflow-wrap: anywhere;
+  }
+
+  .resume__section {
+    margin-top: var(--space-5);
+  }
+
+  .resume__section h2 {
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-1);
+    border-bottom: 1px solid var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .entry + .entry {
+    margin-top: var(--space-3);
+  }
+
+  .entry {
+    break-inside: avoid;
+  }
+
+  .entry__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+  }
+
+  .entry h3 {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 700;
+    line-height: var(--leading-snug);
+    letter-spacing: 0;
+  }
+
+  .entry h3 a {
+    text-decoration-thickness: 1px;
+  }
+
+  .entry__flag {
+    font-weight: 400;
+    color: var(--color-ink-soft);
+  }
+
+  .entry__dates {
+    flex: none;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .entry__place {
+    font-style: italic;
+  }
+
+  .entry__text {
+    margin-top: var(--space-1);
+  }
+
+  .entry__tags {
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--color-ink-soft);
+  }
+
+  .resume__skills {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .resume__skills dt {
+    font-weight: 700;
+  }
+
+  .resume__skills dd {
+    margin: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .resume {
+      padding: var(--space-7);
+    }
+
+    .resume-bar {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .resume-bar__hint {
+      grid-column: 1 / -1;
+    }
+
+    .resume__skills div {
+      display: grid;
+      grid-template-columns: 9rem minmax(0, 1fr);
+      gap: var(--space-3);
+    }
+  }
+
+  /* ---------- Print: only the sheet ---------- */
+
+  @page {
+    margin: 12mm 14mm;
+  }
+
+  @media print {
+    :global(body:has([data-resume])) {
+      display: block;
+      background: #fff;
+    }
+
+    :global(body:has([data-resume]) > .nav),
+    :global(body:has([data-resume]) > .footer),
+    :global(body:has([data-resume]) > .skip-link),
+    .resume-bar {
+      display: none;
+    }
+
+    .resume-page {
+      width: 100%;
+      max-width: none;
+      padding: 0;
+    }
+
+    .resume {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      font-size: 10pt;
+      line-height: 1.38;
+    }
+
+    .resume__head h1 {
+      font-size: 22pt;
+    }
+
+    /* a little tighter than on screen, so a short order fits on one page */
+    .resume__section {
+      margin-top: var(--space-4);
+    }
+
+    .resume__section h2 {
+      margin-bottom: var(--space-2);
+      /* never leave a heading alone at the bottom of a page */
+      break-after: avoid;
+    }
+
+    .resume__section:last-child {
+      break-inside: avoid;
+    }
+
+    .entry + .entry {
+      margin-top: var(--space-2);
+    }
+
+    .resume__skills {
+      gap: var(--space-1);
+    }
+
+    .resume__contact a {
+      min-height: 0;
+      text-decoration: none;
+    }
+
+    .entry h3 {
+      font-size: 10.5pt;
+    }
+
+    .entry h3 a {
+      text-decoration: none;
+    }
+
+    .entry__tags {
+      font-size: 9pt;
+    }
+
+    .resume__skills div {
+      display: grid;
+      grid-template-columns: 9rem minmax(0, 1fr);
+      gap: var(--space-3);
+    }
+  }
+</style>

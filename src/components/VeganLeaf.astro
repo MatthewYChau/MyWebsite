@@ -1,0 +1,61 @@
+---
+/**
+ * The vegan mark: a green leaf. On this menu "vegan" means the project is still in progress.
+ * By default it is the leaf alone, with a tooltip. Set `label` to also show the words.
+ */
+interface Props {
+  label?: boolean;
+}
+
+const { label = false } = Astro.props;
+const meaning = 'Vegan: still in progress';
+---
+
+<span class="vegan" role={label ? undefined : 'img'} aria-label={label ? undefined : meaning} title={label ? undefined : meaning}>
+  <span class="vegan__mark" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path class="vegan__leaf" d="M4.5 19.5C3.5 10.5 9.5 4.5 20 4c.5 10.5-5.5 16.5-15.5 15.5z"></path>
+      <path class="vegan__vein" d="M3.5 20.5c4-5 7.5-8 12-11"></path>
+    </svg>
+  </span>
+  {label && <span>Vegan (in progress)</span>}
+</span>
+
+<style>
+  .vegan {
+    /* sits above the card's full-size link, so the tooltip can show */
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    vertical-align: middle;
+  }
+
+  .vegan__mark {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 1.625rem;
+    height: 1.625rem;
+    border: 2px solid var(--color-mint-deep);
+    border-radius: var(--radius-pill);
+    background: var(--color-mint-soft);
+  }
+
+  .vegan svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .vegan__leaf {
+    fill: var(--color-mint-deep);
+  }
+
+  .vegan__vein {
+    fill: none;
+    stroke: var(--color-mint-soft);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+  }
+</style>

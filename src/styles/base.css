@@ -357,20 +357,6 @@ html.no-js .js-only {
   background: var(--color-paper);
 }
 
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: 0.1rem var(--space-2);
-  border-radius: var(--radius-sm);
-  background: var(--color-yellow);
-  color: var(--color-ink);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
 .placeholder-badge {
   display: inline-block;
   padding: 0.1rem var(--space-2);

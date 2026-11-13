@@ -294,9 +294,17 @@ body:has(.slip-mount) {
     display: none;
   }
 
+  /* the wrappers step aside, so the paper shares the sidebar's height with the legend */
+  .slip-mount--dock,
+  .slip-mount--dock .slip {
+    display: contents;
+  }
+
   .slip-mount--dock .slip__paper {
     position: static;
-    max-height: calc(100dvh - var(--nav-height) - var(--space-6));
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: none;
     padding: var(--space-4);
     border: var(--border);
     border-radius: var(--radius-sm);
@@ -451,6 +459,25 @@ body:has(.slip-mount) {
   gap: var(--space-3);
   margin-top: var(--space-5);
   font-family: var(--font-body);
+}
+
+/* New order and Close sit under the export and share buttons */
+.receipt__actions--end {
+  margin-top: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--color-ink);
+}
+
+.receipt__share-note {
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.receipt__share-note:empty {
+  display: none;
 }
 
 /*

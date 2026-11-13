@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DrinksMenu from '../components/DrinksMenu.astro';
 import MenuFilters from '../components/MenuFilters.astro';
+import MenuLegend from '../components/MenuLegend.astro';
 import OrderSlipMount from '../components/OrderSlipMount.astro';
 import PhotoFrame from '../components/PhotoFrame.astro';
 import ProjectCard from '../components/ProjectCard.astro';
@@ -84,7 +85,8 @@ const variantFor = { mains: 'medium', sides: 'compact', desserts: 'medium' } as 
       }
     </div>
 
-    <aside class="order-area__slip" aria-label="Your order">
+    <aside class="order-area__slip" aria-label="Legend and your order">
+      <MenuLegend variant="card" />
       <OrderSlipMount mode="dock" />
     </aside>
   </div>
@@ -160,9 +162,14 @@ const variantFor = { mains: 'medium', sides: 'compact', desserts: 'medium' } as 
       align-items: start;
     }
 
+    /* legend on top, order slip below; the slip shrinks and scrolls so both fit the screen */
     .order-area__slip {
       position: sticky;
       top: calc(var(--nav-height) + var(--space-5));
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      max-height: calc(100dvh - var(--nav-height) - var(--space-6));
     }
   }
 

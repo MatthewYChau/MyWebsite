@@ -61,6 +61,7 @@ export default function OrderSlip({ items, sections }: Props) {
   const [open, setOpen] = useState(false);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [flying, setFlying] = useState(false);
+  const [shareNote, setShareNote] = useState('');
   const dialogRef = useRef<HTMLDialogElement>(null);
   const panelId = useId();
   const receiptTitleId = useId();
@@ -96,7 +97,29 @@ export default function OrderSlip({ items, sections }: Props) {
       items: ordered,
     });
     setFlying(!reducedMotion);
+    setShareNote('');
     setOpen(false);
+  }
+
+  /** Shares the site address: the phone's share sheet where there is one, otherwise a copied link. */
+  async function share() {
+    const url = `${window.location.origin}/`;
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share({ title: 'Matthew Chau', text: "Matthew Chau's portfolio", url });
+        setShareNote('');
+        return;
+      } catch (error) {
+        // The visitor closed the share sheet. Nothing else to do.
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareNote('Link copied.');
+    } catch {
+      setShareNote(`Copy this link: ${url}`);
+    }
   }
 
   function newOrder() {
@@ -220,10 +243,24 @@ export default function OrderSlip({ items, sections }: Props) {
                 <span lang="zh-Hant">多謝惠顧</span> Thank you
               </p>
               <div className="receipt__actions">
+                <a
+                  className="btn"
+                  href={`/resume/?items=${receipt.items.map((item) => encodeURIComponent(item.id)).join(',')}`}
+                >
+                  Export résumé
+                </a>
+                <button type="button" className="btn btn--quiet" onClick={share}>
+                  Share
+                </button>
+              </div>
+              <p className="receipt__share-note" role="status">
+                {shareNote}
+              </p>
+              <div className="receipt__actions receipt__actions--end">
                 <button type="button" className="btn btn--quiet" onClick={newOrder}>
                   New order
                 </button>
-                <button type="button" className="btn" onClick={() => setReceipt(null)}>
+                <button type="button" className="btn btn--quiet" onClick={() => setReceipt(null)}>
                   Close
                 </button>
               </div>

@@ -1,10 +1,11 @@
 ---
 /** Filters above the menu. Needs JavaScript, so it hides without it. */
 import { MADE_AT } from '../content.config';
+import MenuLegend from './MenuLegend.astro';
 
 /** The cha chaan teng requests. Each has an English subtitle and a longer explanation. */
 const requests = [
-  { flag: 'no-progress', zh: '走冰', en: 'No ice', tip: 'Hides items that are still in progress.' },
+  { flag: 'no-progress', zh: '走冰', en: 'No ice', tip: 'Hides vegan items (still in progress).' },
   { flag: 'no-placeholder', zh: '少甜', en: 'Less sweet', tip: 'Hides placeholder items.' },
 ];
 ---
@@ -52,7 +53,7 @@ const requests = [
     <button type="button" class="filters__clear" data-filter-clear hidden>Clear filters</button>
   </p>
 
-  <p class="filters__legend">Prep time is how long it took. Spice is how demanding it was.</p>
+  <MenuLegend variant="inline" />
 </div>
 
 <script>
@@ -183,11 +184,6 @@ const requests = [
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 0.2em;
-  }
-
-  .filters__legend {
-    font-size: var(--text-xs);
-    color: var(--color-ink-soft);
   }
 
   /* Wider screens: label beside the chips, and each explanation sits under its own chip. */
