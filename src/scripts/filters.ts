@@ -1,26 +1,27 @@
 /**
  * Menu filters.
- * - "Made at" chips: show only items made at the chosen places (none chosen = all)
- * - 走冰 (no-progress): hide items that are still in progress
- * - 少甜 (no-placeholder): hide placeholder items, including placeholder books, videos and photos
+ * - "Made at" chips: one at a time. "All" (or pressing the chosen chip again) shows everything.
+ * - 走冰 / No ice (no-progress): hide items that are still in progress
+ * - 少甜 / Less sweet (no-placeholder): hide placeholder items, including placeholder books, videos and photos
  * Choices are remembered for the browser tab.
  */
 const STORAGE_KEY = 'cct-filters';
 
 interface FilterState {
-  made: string[];
+  /** The one chosen "Made at" place, or null for all. */
+  made: string | null;
   flags: string[];
 }
 
 function load(): FilterState {
   try {
-    const parsed = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '{}') as Partial<FilterState>;
+    const parsed = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '{}') as { made?: unknown; flags?: unknown };
     return {
-      made: Array.isArray(parsed.made) ? parsed.made : [],
-      flags: Array.isArray(parsed.flags) ? parsed.flags : [],
+      made: typeof parsed.made === 'string' && parsed.made ? parsed.made : null,
+      flags: Array.isArray(parsed.flags) ? parsed.flags.filter((flag): flag is string => typeof flag === 'string') : [],
     };
   } catch {
-    return { made: [], flags: [] };
+    return { made: null, flags: [] };
   }
 }
 
@@ -42,8 +43,10 @@ function apply() {
   const root = document.querySelector<HTMLElement>('[data-filters]');
   if (!root) return;
 
+  // The "All" chip has an empty value.
   root.querySelectorAll<HTMLButtonElement>('[data-filter-made]').forEach((button) => {
-    button.setAttribute('aria-pressed', String(state.made.includes(button.dataset.filterMade ?? '')));
+    const value = button.dataset.filterMade ?? '';
+    button.setAttribute('aria-pressed', String(value === '' ? state.made === null : state.made === value));
   });
   root.querySelectorAll<HTMLButtonElement>('[data-filter-flag]').forEach((button) => {
     button.setAttribute('aria-pressed', String(state.flags.includes(button.dataset.filterFlag ?? '')));
@@ -57,7 +60,7 @@ function apply() {
 
   document.querySelectorAll<HTMLElement>('[data-card]').forEach((card) => {
     const visible =
-      (state.made.length === 0 || state.made.includes(card.dataset.madeAt ?? '')) &&
+      (state.made === null || state.made === card.dataset.madeAt) &&
       !(hideInProgress && card.dataset.status === 'in-progress') &&
       !(hidePlaceholders && card.dataset.placeholder === 'true');
     card.hidden = !visible;
@@ -80,7 +83,7 @@ function apply() {
     group.querySelector<HTMLElement>('[data-empty]')?.toggleAttribute('hidden', Boolean(anyVisible));
   });
 
-  const active = state.made.length > 0 || state.flags.length > 0;
+  const active = state.made !== null || state.flags.length > 0;
   const status = root.querySelector<HTMLElement>('[data-filter-status]');
   if (status) status.textContent = active ? `Showing ${shown} of ${total} items.` : '';
   root.querySelector<HTMLElement>('[data-filter-clear]')?.toggleAttribute('hidden', !active);
@@ -91,12 +94,14 @@ document.addEventListener('click', (event) => {
   const button = event.target.closest<HTMLButtonElement>('[data-filter-made], [data-filter-flag], [data-filter-clear]');
   if (!button) return;
 
-  if (button.dataset.filterMade) {
-    state = { ...state, made: toggle(state.made, button.dataset.filterMade) };
+  const made = button.getAttribute('data-filter-made');
+  if (made !== null) {
+    // One place at a time. "All", or the chosen place pressed again, clears it.
+    state = { ...state, made: made === '' || made === state.made ? null : made };
   } else if (button.dataset.filterFlag) {
     state = { ...state, flags: toggle(state.flags, button.dataset.filterFlag) };
   } else {
-    state = { made: [], flags: [] };
+    state = { made: null, flags: [] };
   }
 
   save();

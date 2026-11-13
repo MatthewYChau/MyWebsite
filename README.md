@@ -26,7 +26,7 @@ Other commands:
 - `npm run preview` serves the built site so you can check it before deploying
 - `npm run check` only checks types and content
 
-Do not run `npm run build` while `npm run dev` is running. Stop the dev server first, or the dev server can show React errors until you restart it.
+If the dev server shows a React error right after you install or update packages, stop it and start it again.
 
 ### A note on the Astro version
 
@@ -141,7 +141,7 @@ To replace one:
 2. Set `placeholder: false`.
 3. For images, add the real image to the repo (for example `src/assets/projects/drone-frame.jpg`), then point `src:` at it and write a real `alt:` line that says what the image shows.
 
-On the menu page the 少甜 filter hides everything still marked as a placeholder, so you can see how the site looks without them.
+On the menu page the 少甜 (Less sweet) filter hides everything still marked as a placeholder, so you can see how the site looks without them.
 
 Once a project has a real first image (its `alt` no longer says PLACEHOLDER), that image is also used as the share preview for the project page.
 

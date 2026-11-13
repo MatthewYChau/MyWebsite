@@ -1,11 +1,18 @@
 ---
 /** Filters above the menu. Needs JavaScript, so it hides without it. */
 import { MADE_AT } from '../content.config';
+
+/** The cha chaan teng requests. Each has an English subtitle and a longer explanation. */
+const requests = [
+  { flag: 'no-progress', zh: '走冰', en: 'No ice', tip: 'Hides items that are still in progress.' },
+  { flag: 'no-placeholder', zh: '少甜', en: 'Less sweet', tip: 'Hides placeholder items.' },
+];
 ---
 
 <div class="filters js-only" data-filters>
-  <div class="filters__group" role="group" aria-label="Filter by where it was made">
+  <div class="filters__group" role="group" aria-label="Filter by where it was made. One at a time.">
     <span class="filters__label">Made at</span>
+    <button type="button" class="chip" aria-pressed="true" data-filter-made="">All</button>
     {
       MADE_AT.map((place) => (
         <button type="button" class="chip" aria-pressed="false" data-filter-made={place}>
@@ -17,14 +24,27 @@ import { MADE_AT } from '../content.config';
 
   <div class="filters__group filters__group--requests" role="group" aria-label="Kitchen requests">
     <span class="filters__label">Requests</span>
-    <button type="button" class="chip chip--zh" aria-pressed="false" data-filter-flag="no-progress" aria-describedby="tip-no-ice">
-      <span lang="zh-Hant">走冰</span>
-      <span class="chip__tip" role="tooltip" id="tip-no-ice">"No ice": hide items that are still in progress.</span>
-    </button>
-    <button type="button" class="chip chip--zh" aria-pressed="false" data-filter-flag="no-placeholder" aria-describedby="tip-less-sweet">
-      <span lang="zh-Hant">少甜</span>
-      <span class="chip__tip" role="tooltip" id="tip-less-sweet">"Less sweet": hide placeholder items.</span>
-    </button>
+    {
+      requests.map((request) => (
+        <span class="request">
+          <button
+            type="button"
+            class="chip chip--request"
+            aria-pressed="false"
+            data-filter-flag={request.flag}
+            aria-describedby={`tip-${request.flag}`}
+          >
+            <span class="chip__zh" lang="zh-Hant">
+              {request.zh}
+            </span>
+            <span class="chip__sub">{request.en}</span>
+          </button>
+          <span class="tip" role="tooltip" id={`tip-${request.flag}`}>
+            {request.tip}
+          </span>
+        </span>
+      ))
+    }
   </div>
 
   <p class="filters__status">
@@ -59,7 +79,7 @@ import { MADE_AT } from '../content.config';
   }
 
   .filters__label {
-    flex: 0 0 5rem;
+    flex: 0 0 100%;
     font-size: var(--text-xs);
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -69,6 +89,7 @@ import { MADE_AT } from '../content.config';
   .chip {
     display: inline-flex;
     align-items: center;
+    gap: var(--space-2);
     min-height: var(--tap);
     padding: var(--space-1) var(--space-4);
     border: var(--border);
@@ -95,37 +116,47 @@ import { MADE_AT } from '../content.config';
     color: var(--color-paper);
   }
 
-  .chip--zh [lang='zh-Hant'] {
+  /* a little tighter, so both requests fit on one row on a phone */
+  .chip--request {
+    gap: var(--space-1);
+    padding-inline: var(--space-3);
+  }
+
+  .chip__zh {
     font-family: var(--font-zh-display);
     font-weight: 900;
     font-size: var(--text-md);
     line-height: 1;
   }
 
-  /* English explanation, shown on hover, keyboard focus or tap */
-  .chip__tip {
+  /* English subtitle, always visible */
+  .chip__sub {
+    font-size: var(--text-sm);
+    font-weight: 700;
+  }
+
+  /* Longer explanation, shown on hover, keyboard focus or tap */
+  .tip {
     position: absolute;
     top: calc(100% + var(--space-2));
     left: 0;
     z-index: 5;
     width: max-content;
     max-width: 100%;
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-sm);
     background: var(--color-ink);
     color: var(--color-paper);
-    font-family: var(--font-body);
-    font-size: var(--text-xs);
-    font-weight: 400;
-    text-align: left;
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
     visibility: hidden;
     opacity: 0;
     transition: opacity var(--dur-fast) var(--ease-out);
     pointer-events: none;
   }
 
-  .chip:hover .chip__tip,
-  .chip:focus .chip__tip {
+  .request:hover .tip,
+  .request:focus-within .tip {
     visibility: visible;
     opacity: 1;
   }
@@ -157,5 +188,25 @@ import { MADE_AT } from '../content.config';
   .filters__legend {
     font-size: var(--text-xs);
     color: var(--color-ink-soft);
+  }
+
+  /* Wider screens: label beside the chips, and each explanation sits under its own chip. */
+  @media (min-width: 40rem) {
+    .filters__label {
+      flex: 0 0 5rem;
+    }
+
+    .request {
+      position: relative;
+    }
+
+    .chip--request {
+      gap: var(--space-2);
+      padding-inline: var(--space-4);
+    }
+
+    .tip {
+      max-width: 20rem;
+    }
   }
 </style>
