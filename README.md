@@ -1,5 +1,7 @@
 # Matthew Chau · Portfolio
 
+Live at https://matthew-chau.pages.dev. Every push to `main` on GitHub redeploys it through Cloudflare Pages.
+
 My portfolio, themed as a Hong Kong cha chaan teng (茶餐廳). Each project is an item on the menu. Visitors tick items on an order slip, check out, and get a receipt with links to each project.
 
 The theme lives in the frame (headers, order slip, receipt, tiles). The content stays plain (real project names, plain descriptions).
@@ -133,7 +135,6 @@ What is a placeholder right now:
 - **Socials:** GitHub, Instagram and YouTube in `src/data/socials.json`
 - **Resume:** `public/resume.pdf`
 - **About page:** one TODO in the bio
-- **Site address:** `site` in `astro.config.mjs`
 
 To replace one:
 

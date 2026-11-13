@@ -38,9 +38,9 @@ function chineseFontSubset() {
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: change this to your real address once the site is live
-  // (your-project.pages.dev or yourname.is-a.dev). It is used for
-  // Open Graph tags and canonical links.
+  // The live address (Cloudflare Pages project "matthew-chau"). It is used for
+  // Open Graph tags and canonical links. Change it if you add a custom domain
+  // such as yourname.is-a.dev.
   site: 'https://matthew-chau.pages.dev',
   output: 'static',
   compressHTML: true,
