@@ -178,7 +178,7 @@ const showMedia = variant === 'large' && cover;
   }
 
   .card__desc {
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     color: var(--color-ink-soft);
   }
 
@@ -310,11 +310,7 @@ const showMedia = variant === 'large' && cover;
   }
 
   .card--compact .card__desc {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    font-size: var(--text-sm);
   }
 
   .card--compact .code-badge {

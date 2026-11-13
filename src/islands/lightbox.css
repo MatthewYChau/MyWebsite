@@ -15,6 +15,7 @@
 
 .lightbox[open] {
   display: grid;
+  grid-template-rows: minmax(0, 1fr);
   place-items: center;
 }
 
@@ -44,7 +45,8 @@
   width: auto;
   max-width: 100%;
   height: auto;
-  max-height: 100%;
+  /* leaves room for the caption and the buttons, whatever the photo's shape */
+  max-height: calc(100dvh - 14rem);
   min-height: 0;
   object-fit: contain;
   border: 6px solid var(--strip-white);

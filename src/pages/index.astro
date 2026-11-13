@@ -90,14 +90,14 @@ const variantFor = { mains: 'medium', sides: 'compact', desserts: 'medium' } as 
   </div>
 
   <section class="wrap section" aria-labelledby="drinks-title">
-    <SectionHeader id="drinks-title" zh="飲品" en="Drinks" note="Book reviews, each paired with a drink" />
+    <SectionHeader id="drinks-title" zh="飲品" en="Drinks" note="Book reviews, each paired with a drink" plate />
     <DrinksMenu />
   </section>
 
   <section class="photo-wall tiles" aria-labelledby="photos-title">
     <div class="wrap section">
-      <SectionHeader id="photos-title" zh="相片牆" en="Photo Wall" note="My photography">
-        <a class="link section-head__more" href="/photos/">See the whole wall</a>
+      <SectionHeader id="photos-title" zh="相片牆" en="Photo Wall" note="My photography" plate>
+        <a class="section-head__more" href="/photos/">See the whole wall</a>
       </SectionHeader>
       <ul class="photo-strip" data-filter-group>
         {
@@ -113,8 +113,8 @@ const variantFor = { mains: 'medium', sides: 'compact', desserts: 'medium' } as 
   </section>
 
   <section class="wrap section" aria-labelledby="kitchen-title">
-    <SectionHeader id="kitchen-title" en="Open Kitchen" note="Latest videos">
-      <a class="link section-head__more" href="/kitchen/">Watch all videos</a>
+    <SectionHeader id="kitchen-title" en="Open Kitchen" note="Latest videos" plate>
+      <a class="section-head__more" href="/kitchen/">Watch all videos</a>
     </SectionHeader>
     <div class="video-grid" data-filter-group>
       {latestVideos.map((video) => <VideoCard video={video} heading="h3" />)}
@@ -170,13 +170,6 @@ const variantFor = { mains: 'medium', sides: 'compact', desserts: 'medium' } as 
     border-block: var(--border);
   }
 
-  .photo-wall :global(.section-head) {
-    padding: var(--space-3) var(--space-4);
-    border: var(--border);
-    border-radius: var(--radius-md);
-    background: var(--color-paper);
-  }
-
   .photo-strip {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -186,7 +179,6 @@ const variantFor = { mains: 'medium', sides: 'compact', desserts: 'medium' } as 
 
   .photo-strip .empty-note {
     grid-column: 1 / -1;
-    background: var(--color-paper);
   }
 
   @media (min-width: 48rem) {

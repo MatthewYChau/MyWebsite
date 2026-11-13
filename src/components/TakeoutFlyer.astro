@@ -26,7 +26,7 @@ const socials = await getOrdered('socials');
           {data.placeholder ? (
             <span class="placeholder-badge">PLACEHOLDER</span>
           ) : (
-            <a class="link" href={data.url} rel={data.platform === 'email' ? undefined : 'me noopener'}>
+            <a href={data.url} rel={data.platform === 'email' ? undefined : 'me noopener'}>
               {data.handle}
             </a>
           )}
@@ -102,6 +102,17 @@ const socials = await getOrdered('socials');
   }
 
   .flyer__item a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 700;
     overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25em;
+  }
+
+  .flyer__item a:hover {
+    text-decoration-thickness: 4px;
   }
 </style>

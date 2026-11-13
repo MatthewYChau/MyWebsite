@@ -17,11 +17,7 @@ const videos = await getVideos();
     {
       videos.length > 0 ? (
         <div class="kitchen">
-          {videos.map((video) => (
-            <div class="kitchen__item laminated">
-              <VideoCard video={video} heading="h2" />
-            </div>
-          ))}
+          {videos.map((video) => <VideoCard video={video} heading="h2" />)}
         </div>
       ) : (
         <p class="empty-note">No videos yet.</p>
@@ -37,7 +33,4 @@ const videos = await getVideos();
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   }
 
-  .kitchen__item {
-    padding: var(--space-4);
-  }
 </style>

@@ -120,11 +120,12 @@ const books = await getBooks();
     display: grid;
     grid-template-columns: 2.75rem minmax(0, 1fr);
     gap: var(--space-3);
-    padding-block: var(--space-3);
+    padding-block: var(--space-2) var(--space-3);
     border-bottom: 1px dashed var(--color-ink-soft);
   }
 
   .row__code {
+    padding-top: 0.6rem;
     font-family: var(--font-display);
     color: var(--color-red);
   }
@@ -136,6 +137,13 @@ const books = await getBooks();
     gap: var(--space-1) var(--space-3);
     font-size: var(--text-md);
     font-weight: 700;
+  }
+
+  /* full-height tap target for each name */
+  .row__name a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
   }
 
   .row__desc {

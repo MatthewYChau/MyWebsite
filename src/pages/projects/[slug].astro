@@ -40,7 +40,7 @@ const shareImage = shareSource
 >
   <article class="wrap dish">
     <p class="crumbs">
-      <a class="link" href="/#menu">Menu</a>
+      <a href="/#menu">Menu</a>
       <span aria-hidden="true">/</span>
       <span><span lang="zh-Hant">{section.zh}</span> {section.en}</span>
     </p>
@@ -166,12 +166,30 @@ const shareImage = shareSource
   }
 
   .crumbs {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
     min-height: var(--tap);
+    padding-inline: var(--space-4);
+    border: 1px solid var(--color-ink-soft);
+    border-radius: var(--radius-pill);
+    background: var(--color-paper);
     font-size: var(--text-sm);
+  }
+
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25em;
+  }
+
+  .crumbs a:hover {
+    text-decoration-thickness: 4px;
   }
 
   .crumbs [lang='zh-Hant'] {

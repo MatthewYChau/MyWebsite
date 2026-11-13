@@ -21,9 +21,8 @@ function setup() {
   if (!storefront || root.dataset.storefront !== 'show') return;
 
   // Keep keyboard and screen-reader focus on the storefront while it covers the page.
-  const behind = Array.from(document.body.children).filter(
-    (element) => element !== storefront && !element.classList.contains('skip-link'),
-  );
+  // That includes the "Skip to content" link: the storefront has its own Skip button.
+  const behind = Array.from(document.body.children).filter((element) => element !== storefront);
   behind.forEach((element) => element.setAttribute('inert', ''));
 
   const controller = new AbortController();

@@ -7,12 +7,14 @@ interface Props {
   /** Short plain note, for example "Work projects" */
   note?: string;
   id?: string;
+  /** Set this when the header sits straight on the tiled wall. It gets a paper plate so the text stays easy to read. */
+  plate?: boolean;
 }
 
-const { zh, en, note, id } = Astro.props;
+const { zh, en, note, id, plate = false } = Astro.props;
 ---
 
-<header class="section-head">
+<header class:list={['section-head', { 'section-head--plate': plate }]}>
   <h2 class="section-head__title" id={id}>
     {zh && <span class="section-head__zh" lang="zh-Hant">{zh}</span>}
     <span class="section-head__en">{en}</span>
